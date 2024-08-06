@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\SocialController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -27,5 +28,10 @@ Route::middleware('auth')->group(function () {
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
+
+Route::get('/auth/redirect', [SocialController::class, 'redirectToGoogle'])
+    ->name('google.auth');
+Route::get('/auth/callback', [SocialController::class, 'googleCallback'])
+    ->name('google.callback');
 
 require __DIR__.'/auth.php';
