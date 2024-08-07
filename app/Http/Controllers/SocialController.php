@@ -4,9 +4,10 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Laravel\Socialite\Facades\Socialite;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Hash;
 use Exception;
 use App\Models\User;
-use Illuminate\Support\Facades\Auth;
 
 class SocialController extends Controller
 {
@@ -17,27 +18,20 @@ class SocialController extends Controller
      
      public function googleCallback()
      {
-        $user = Socialite::driver('google')->user();
-        dd($user);
-        $name = $user->getName();
-        $email = $user->getEmail();
-        $avatar = $user->getAvatar();
-        $password = Hash::make('12345678');
-
-        $data = [
-            'name' => $name, 
-            'email' => $email,
-            'password' => $password,
-            'avatar' => $avatar
-        ];
+        $googleUser = Socialite::driver('google')->user();
+        
+        $user = User::updateOrCreate([
+            'google_id' => $googleUser->id,
+        ], [
+            'name' => $googleUser->getName(),
+            'email' => $googleUser->getEmail(),
+            'avatar' => $googleUser->getAvatar(),
+            'password' => Hash::make('12345678'),
+        ]);
     
-        $findUser = User::where('email', $email)->first();
-        if($findUser) {
-            return $findUser->fill(['name' => $name, 'avatar' => $avatar]);
-        }else{
-            return User::create($data);
-        }        
-
-        return redirect(RouteServiceProvider::HOME);
-     }
+        Auth::login($user);
+    
+        return redirect('/dashboard');
+    }
 }
+
