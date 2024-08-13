@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\SocialController;
+use App\Http\Controllers\CurrencyController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -35,3 +36,8 @@ Route::get('/auth/callback', [SocialController::class, 'googleCallback'])
     ->name('google.callback');
 
 require __DIR__.'/auth.php';
+
+Route::get('/currency', [CurrencyController::class, 'index'])
+    ->name('currency');
+Route::post('/currency', [CurrencyController::class, 'exchangeCurrency'])
+    ->name('exchangeCurrency');

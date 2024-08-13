@@ -30,6 +30,10 @@
                     @endauth
                 </div>
             @endif
+            <!-- Добавил ссылку валюту -->
+            <div>
+                <a href="{{ route('currency')}}">Ссылка просмотр валюты</a>
+            </div>
 
             <div class="max-w-7xl mx-auto p-6 lg:p-8">
                 <div class="flex justify-center">
