@@ -28,7 +28,7 @@ Route::get('/dashboard', function () {
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
-    //Route::post('/profile', [AvatarController::class, 'save'])->name('avatar.update');
+    Route::post('/profile', [ProfileController::class, 'store'])->name('avatar.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
 
@@ -44,5 +44,5 @@ Route::get('/currency', [CurrencyController::class, 'index'])
 Route::post('/currency', [CurrencyController::class, 'exchangeCurrency'])
     ->name('exchangeCurrency');
 
-Route::get('/profile/upload-image', [AvatarController::class, 'index'])->name('profile.avatar');
-Route::post('/profile/save', [AvatarController::class, 'save'])->name('profile.save');
+//Route::get('/profile/upload-image', [AvatarController::class, 'index'])->name('profile.avatar');
+//Route::post('/profile/save', [AvatarController::class, 'save'])->name('profile.save');

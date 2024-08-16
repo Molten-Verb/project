@@ -27,24 +27,33 @@ class ProfileController extends Controller
      */
     public function update(ProfileUpdateRequest $request): RedirectResponse
     {
-        
+        $request->user()->fill($request->validated());
         
         if ($request->user()->isDirty('email')) {
             $request->user()->email_verified_at = null;
         }
 
-        $request->user()->fill($request->validated());
-
-        if ($request->user()->isClean('avatar') !== true) {
-            $avatar = $request->user()->avatar;
-            dd($avatar);
-            $saveAvatar = Storage::disk('local')->put('avatar', 'Contents');
-            $urlAvatar = Storage::url('file.jpg');
-        }
-
         $request->user()->save();
 
         return Redirect::route('profile.edit')->with('status', 'profile-updated');
+    }
+
+    public function store(Request $request)
+    {
+        $validatedData = $request->validate([
+            'image' => 'required|image|mimes:jpg,png,jpeg,gif,svg|max:2048',
+            ]);
+   
+            $name = $request->file('image')->getClientOriginalName();
+            $path = $request->file('image')->storeAs( // сохр. с оригинальным именем
+               'public/avatars', $name
+            );
+            $urlAvatar = "app/storage/app/public/avatars/{$name}";
+            $request->user()->avatar = $urlAvatar; // меняем адрес аватара
+
+            $request->user()->save();
+        
+            return Redirect::route('profile.edit')->with('status', 'avatar-updated');
     }
 
     /**
