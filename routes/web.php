@@ -1,9 +1,10 @@
 <?php
 
-use App\Http\Controllers\ProfileController;
-use App\Http\Controllers\SocialController;
-use App\Http\Controllers\CurrencyController;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\AvatarController;
+use App\Http\Controllers\SocialController;
+use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\CurrencyController;
 
 /*
 |--------------------------------------------------------------------------
@@ -27,6 +28,7 @@ Route::get('/dashboard', function () {
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
+    //Route::post('/profile', [AvatarController::class, 'save'])->name('avatar.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
 
@@ -41,3 +43,6 @@ Route::get('/currency', [CurrencyController::class, 'index'])
     ->name('currency');
 Route::post('/currency', [CurrencyController::class, 'exchangeCurrency'])
     ->name('exchangeCurrency');
+
+Route::get('/profile/upload-image', [AvatarController::class, 'index'])->name('profile.avatar');
+Route::post('/profile/save', [AvatarController::class, 'save'])->name('profile.save');
