@@ -12,7 +12,8 @@
         "laravel/socialite": "^5.15",
         "laravel/tinker": "^2.8",
         "socialiteproviders/google": "^4.1",
-        "socialiteproviders/vkontakte": "^5.0"
+        "socialiteproviders/vkontakte": "^5.0",
+        "spatie/laravel-html": "^3.5"
     },
     "require-dev": {
         "fakerphp/faker": "^1.9.1",

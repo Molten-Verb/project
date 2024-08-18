@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-<title>Laravel 10 Currency Exchange Rate Calculator - Tutsmake.com</title> 
+<title>Калькулятор валют</title> 
 <meta name="csrf-token" content="{{ csrf_token() }}">
 <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css">
 <script src="https://code.jquery.com/jquery-3.4.1.js"></script> 
@@ -11,7 +11,7 @@
 <div class="container mt-5">
   <div class="card">
 	  <div class="card-header">
-	    Laravel Currency Exchange Rate Calculator
+	    Калькулятор валюты
 	  </div>
 	  <div class="card-body">
 		<form id="currency-exchange-rate" action="#" method="post" class="form-group">
