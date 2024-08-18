@@ -43,6 +43,3 @@ Route::get('/currency', [CurrencyController::class, 'index'])
     ->name('currency');
 Route::post('/currency', [CurrencyController::class, 'exchangeCurrency'])
     ->name('exchangeCurrency');
-
-//Route::get('/profile/upload-image', [AvatarController::class, 'index'])->name('profile.avatar');
-//Route::post('/profile/save', [AvatarController::class, 'save'])->name('profile.save');
