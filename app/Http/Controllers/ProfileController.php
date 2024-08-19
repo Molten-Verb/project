@@ -43,13 +43,14 @@ class ProfileController extends Controller
         $validatedData = $request->validate([
             'image' => 'required|image|mimes:jpg,png,jpeg,gif,svg|max:2048',
             ]);
-   
-            $name = $request->file('image')->getClientOriginalName();
-            $path = $request->file('image')->storeAs( // сохр. с оригинальным именем
-               'public/avatars', $name
-            );
-            $urlAvatar = "app/storage/app/public/avatars/{$name}";
-            $request->user()->avatar = $urlAvatar; // меняем адрес аватара
+            $avatar = $request->file('image');
+            $avatarOriginalName = $avatar->getClientOriginalName(); // оригинальное имя файла
+            $ext = $avatar->getClientOriginalExtension(); // расширение файла
+            $fileName = $avatarOriginalName.'.'.$ext; // имя файла с расширением
+            $saveAvatar = Storage::disk('local')->put('public/avatars' . '/' . $fileName , $avatar);
+                        
+            $url = Storage::url($saveAvatar);
+            $request->user()->avatar = $url; // записываем в БД имя файла
 
             $request->user()->save();
         
