@@ -9,6 +9,7 @@ use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Redirect;
 use App\Http\Requests\ProfileUpdateRequest;
+use Illuminate\Foundation\Validation\ValidatesRequests;
 
 class ProfileController extends Controller
 {
@@ -43,18 +44,20 @@ class ProfileController extends Controller
         $validatedData = $request->validate([
             'image' => 'required|image|mimes:jpg,png,jpeg,gif,svg|max:2048',
             ]);
-            $avatar = $request->file('image');
-            $avatarOriginalName = $avatar->getClientOriginalName(); // оригинальное имя файла
-            $ext = $avatar->getClientOriginalExtension(); // расширение файла
-            $fileName = $avatarOriginalName.'.'.$ext; // имя файла с расширением
-            $saveAvatar = Storage::disk('local')->put('public/avatars' . '/' . $fileName , $avatar);
-                        
-            $url = Storage::url($saveAvatar);
-            $request->user()->avatar = $url; // записываем в БД имя файла
+            
+        $avatar = $request->file('image');
 
-            $request->user()->save();
+        $avatarOriginalName = $avatar->getClientOriginalName(); // оригинальное имя файла
+        $ext = $avatar->getClientOriginalExtension(); // расширение файла
+        $fileName = $avatarOriginalName.'.'.$ext; // имя файла с расширением
+        $saveAvatar = Storage::disk('local')->put("public/avatars/{$fileName}" , $avatar);
+                        
+        $url = Storage::url($saveAvatar);
+        auth()->user()->avatar = $url; // записываем в БД имя файла
+
+        auth()->user()->save();
         
-            return Redirect::route('profile.edit')->with('status', 'avatar-updated');
+        return Redirect::route('profile.edit')->with('status', 'avatar-updated');
     }
 
     /**
