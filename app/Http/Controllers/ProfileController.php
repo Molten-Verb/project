@@ -9,7 +9,7 @@ use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Redirect;
 use App\Http\Services\AvatarUpdateRequest;
-use App\Http\Services\SaveAvatar;
+use App\Http\Services\SaveImage;
 use App\Http\Requests\ProfileUpdateRequest;
 use Illuminate\Foundation\Validation\ValidatesRequests;
 
@@ -30,29 +30,29 @@ class ProfileController extends Controller
      */
     public function update(ProfileUpdateRequest $request): RedirectResponse
     {
-        Auth::user()->fill($request->validated());
+        $user = Auth::user();
+        $user->fill($request->validated());
 
-        if (Auth::user()->isDirty('email')) {
-            Auth::user()->email_verified_at = null;
+        if ($user->isDirty('email')) {
+            $user->email_verified_at = null;
         }
 
-        Auth::user()->save();
+        $user->save();
 
         return Redirect::route('profile.edit')->with('status', 'profile-updated');
     }
 
     public function store(AvatarUpdateRequest $request)
     {
-        $request->validated();
-
+        $user = Auth::user();
         $image = $request->file('image');
 
-        $avatar = new SaveAvatar;
-        $avatar->saveNewAvatar($image);
-        $url = $avatar->url;
+        $avatar = new SaveImage;
+        $avatar->saveNewImage($image);
+        $url = $avatar->getUrl();
 
-        Auth::user()->avatar = $url; // записываем в БД имя файла
-        Auth::user()->save();
+        $user->avatar = $url; // записываем в БД путь к файлу
+        $user->save();
 
         return Redirect::route('profile.edit')->with('status', 'avatar-updated');
     }
