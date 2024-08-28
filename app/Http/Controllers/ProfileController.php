@@ -42,17 +42,17 @@ class ProfileController extends Controller
         return Redirect::route('profile.edit')->with('status', 'profile-updated');
     }
 
-    public function store(AvatarUpdateRequest $request)
+    public function store(AvatarUpdateRequest $request): RedirectResponse
     {
         $user = Auth::user();
         $image = $request->file('image');
 
         $avatar = new SaveImage;
-        $avatar->saveNewImage($image);
+        $nameSavingFolder = 'image';
+        $avatar->saveImage($image, $nameSavingFolder);
         $url = $avatar->getUrl();
 
-        $user->avatar = $url; // записываем в БД путь к файлу
-        $user->save();
+        $user->update(['avatar' => $url]);
 
         return Redirect::route('profile.edit')->with('status', 'avatar-updated');
     }

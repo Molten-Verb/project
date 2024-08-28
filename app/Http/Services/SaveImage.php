@@ -10,23 +10,27 @@ class SaveImage
 {
     protected ?UploadedFile $image;
     protected ?string $url;
+    protected ?string $nameFolder;
 
-    public function saveNewImage($image):void
+    public function saveImage($image, $nameFolder = null):void
     {
-        $imageOriginalName = $image->getClientOriginalName(); // оригинальное имя файла
+        $imageOriginalName = $image->getClientOriginalName();
 
-        $routeName = Route::currentRouteName();
-        $explodeRouteName = explode('.', $routeName);
-        $nameFolder = $explodeRouteName[1];
+        if ($nameFolder === null)
+        {
+            $routeName = Route::currentRouteName();
+            $explodeRouteName = explode('.', $routeName);
+            $nameFolder = $explodeRouteName[1];
+        }
 
-        $path = $image->storeAs( // сохр. с оригинальным именем
+        $path = $image->storeAs(
             "public/{$nameFolder}", $imageOriginalName
         );
 
         $this->url = Storage::url($path);
     }
 
-    public function getUrl()
+    public function getUrl(): string
     {
         return $this->url;
     }
