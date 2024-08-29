@@ -12,13 +12,13 @@ class SaveImage
     protected ?string $url;
     protected ?string $nameFolder;
 
-    public function saveImage($image, $nameFolder = null):void
+    public function saveImage(UploadedFile $image, string $nameFolder = null):void
     {
         $imageOriginalName = $image->getClientOriginalName();
 
-        if ($nameFolder === null)
+        if (!isset($nameFolder))
         {
-            $routeName = Route::currentRouteName();
+            $currentRouteName = Route::currentRouteName();
             $explodeRouteName = explode('.', $routeName);
             $nameFolder = $explodeRouteName[1];
         }
