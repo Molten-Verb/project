@@ -2,7 +2,9 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Wallet;
+use App\Models\WalletDollar;
+use App\Models\WalletEuro;
+use App\Models\WalletRuble;
 use App\Models\User;
 use Illuminate\View\View;
 use Illuminate\Http\Request;
@@ -21,7 +23,7 @@ class WalletController extends Controller
     public function index(Request $request): View
     {
         $userName = $request->user()->name;
-        $isWalletCreate = Wallet::firstWhere('user_name',$userName);
+        $isWalletEuroCreate = WalletEuro::firstWhere('user_name',$userName);
 
         return view('wallet', compact('isWalletCreate'));
     }
