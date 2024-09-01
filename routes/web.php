@@ -3,6 +3,7 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AvatarController;
 use App\Http\Controllers\SocialController;
+use App\Http\Controllers\WalletController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\CurrencyController;
 
@@ -43,3 +44,10 @@ Route::get('/currency', [CurrencyController::class, 'index'])
     ->name('currency');
 Route::post('/currency', [CurrencyController::class, 'exchangeCurrency'])
     ->name('exchangeCurrency');
+
+Route::middleware('auth')->group(function () {
+    Route::get('/wallet', [WalletController::class, 'index'])->name('wallet.home');
+    Route::patch('/wallet', [WalletController::class, 'update'])->name('wallet.update');
+    Route::post('/wallet', [WalletController::class, 'store'])->name('wallet.create');
+    //Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
+});

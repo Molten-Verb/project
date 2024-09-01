@@ -1,28 +1,28 @@
 <!DOCTYPE html>
 <html>
 <head>
-<title>Laravel 10 Currency Exchange Rate Calculator - Tutsmake.com</title> 
+<title>Калькулятор валют</title>
 <meta name="csrf-token" content="{{ csrf_token() }}">
 <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css">
-<script src="https://code.jquery.com/jquery-3.4.1.js"></script> 
+<script src="https://code.jquery.com/jquery-3.4.1.js"></script>
 </head>
 <body>
 
 <div class="container mt-5">
   <div class="card">
 	  <div class="card-header">
-	    Laravel Currency Exchange Rate Calculator
+	    Калькулятор валюты
 	  </div>
 	  <div class="card-body">
 		<form id="currency-exchange-rate" action="#" method="post" class="form-group">
 		   <div class="row mb-3">
-                
+
                 <div class="col-md-4">
-                 <input type="text" name="amount" class="form-control" value="1">	
+                 <input type="text" name="amount" class="form-control" value="1">
 		        </div>
 
 		        <div class="col-md-4">
-				<select name="from_currency" class="form-control"> 
+				<select name="from_currency" class="form-control">
 
 				 <option value='AUD'>AUD</option>
 				 <option value='BGN'>BGN</option>
@@ -62,7 +62,7 @@
 
 			    <div class="col-md-4">
 				<select name="to_currency" class="form-control">
-			       
+
 				 <option value='AUD'>AUD</option>
 				 <option value='BGN'>BGN</option>
 				 <option value='BRL'>BRL</option>
@@ -100,15 +100,15 @@
 			    </div>
 
 
-		   </div>  
-	          
+		   </div>
+
 	       <div class="row">
 	      	<div class="col-md-4">
 	      	<input type="submit" name="submit" id="btnSubmit" class="btn btn-primary " value="Click To Exchange Rate">
 	      	</div>
 	      </div>
-	          
-		</form> 
+
+		</form>
 	  </div>
 	   <div class="card-footer">
         <span id="output"></span>
@@ -132,7 +132,7 @@
         // Get form
         var form = $('#currency-exchange-rate')[0];
 
-       // Create an FormData object 
+       // Create an FormData object
         var data = new FormData(form);
 
        // disabled the submit button
@@ -149,7 +149,7 @@
             success: function (data) {
 
                 $("#output").html(data);
-             
+
                 $("#btnSubmit").prop("disabled", false);
 
             },
