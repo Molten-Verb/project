@@ -22,10 +22,26 @@ class WalletController extends Controller
      */
     public function index(Request $request): View
     {
-        $userName = $request->user()->name;
-        $isWalletEuroCreate = WalletEuro::firstWhere('user_name',$userName);
+        $user = Auth::user();
+        $isWalletEuroCreate = WalletEuro::firstWhere('user_name', $user->name);
+        $walletRuble = WalletRuble::where('user_name', '=', $user->name)
+                                ->orderBy('updated_at', 'DESC')
+                                ->first()
+                                ->get('count');
+        $walletDollar = WalletDollar::where('user_name', '=', $user->name)
+                                ->orderBy('updated_at', 'DESC')
+                                ->first()
+                                ->get('count');
+        $walletEuro = WalletDollar::where('user_name', '=', $user->name)
+                                ->orderBy('updated_at', 'DESC')
+                                ->first()
+                                ->get('count');
 
-        return view('wallet', compact('isWalletCreate'));
+        $rubleCount = $walletRuble[0]['count'];
+        $dollarCount = $walletRuble[0]['count'];
+        $euroCount = $walletRuble[0]['count'];
+
+        return view('wallet', compact('isWalletEuroCreate', 'rubleCount', 'dollarCount', 'euroCount'));
     }
 
     /**
@@ -38,11 +54,11 @@ class WalletController extends Controller
      */
     public function store(Request $request)
     {
-        $data = ['user_name' => $request->user()->name];
+        $user = Auth::user();
 
-        $wallet = new Wallet();
-        $wallet->fill($data);
-        $wallet->save($data);
+        $walletEuro = WalletEuro::create([
+            'user_name' => $user->name
+        ]);
 
         return redirect()
             ->route('wallet.home');

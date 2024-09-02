@@ -45,9 +45,8 @@ Route::get('/currency', [CurrencyController::class, 'index'])
 Route::post('/currency', [CurrencyController::class, 'exchangeCurrency'])
     ->name('exchangeCurrency');
 
-Route::middleware('auth')->group(function () {
-    Route::get('/wallet', [WalletController::class, 'index'])->name('wallet.home');
-    Route::patch('/wallet', [WalletController::class, 'update'])->name('wallet.update');
-    Route::post('/wallet', [WalletController::class, 'store'])->name('wallet.create');
-    //Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
+Route::middleware('auth')->prefix('wallet')->name('wallet.')->controller(WalletController::class)->group(function () {
+    Route::get('/', 'index')->name('home');
+    Route::patch('/', 'update')->name('update');
+    Route::post('/', 'store')->name('euro.create');
 });
