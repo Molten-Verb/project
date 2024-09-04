@@ -11,6 +11,6 @@ class WalletDollar extends Model
 
     protected $fillable = [
         'user_name',
-		'USD',
+		'value',
     ];
 }

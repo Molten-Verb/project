@@ -18,7 +18,7 @@
                     <x-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')">
                         {{ __('Dashboard') }}
                     </x-nav-link>
-                    <x-nav-link :href="route('wallet.home')" :active="request()->routeIs('dashboard')">
+                    <x-nav-link :href="route('wallet.index', ['id => $id'])" :active="request()->routeIs('dashboard')">
                         {{ __('Wallet') }}
                     </x-nav-link>
                 </div>

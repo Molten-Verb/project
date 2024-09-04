@@ -1,5 +1,6 @@
 <?php
 
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AvatarController;
 use App\Http\Controllers\SocialController;
@@ -26,27 +27,38 @@ Route::get('/dashboard', function () {
     return view('dashboard');
 })->middleware(['auth', 'verified'])->name('dashboard');
 
-Route::middleware('auth')->prefix('profile')->name('profile.')->controller(ProfileController::class)->group(function () {
-    Route::get('/', 'edit')->name('edit');
-    Route::patch('/', 'update')->name('update');
-    Route::post('/', 'store')->name('avatar.update');
-    Route::delete('/', 'destroy')->name('destroy');
+Route::middleware('auth')->prefix('profile')
+    ->name('profile.')
+    ->controller(ProfileController::class)
+    ->group(function () {
+        Route::get('/', 'edit')->name('edit');
+        Route::patch('/', 'update')->name('update');
+        Route::post('/', 'store')->name('avatar.update');
+        Route::delete('/', 'destroy')->name('destroy');
 });
 
 Route::get('/auth/redirect', [SocialController::class, 'redirectToGoogle'])
     ->name('google.auth');
+
 Route::get('/auth/callback', [SocialController::class, 'googleCallback'])
     ->name('google.callback');
 
 require __DIR__.'/auth.php';
 
-Route::get('/currency', [CurrencyController::class, 'index'])
-    ->name('currency');
-Route::post('/currency', [CurrencyController::class, 'exchangeCurrency'])
-    ->name('exchangeCurrency');
+Route::prefix('currency')
+    ->controller(CurrencyController::class)
+    ->group( function () {
+        Route::get('/currency', 'index')
+            ->name('currency.index');
+        Route::post('/currency', 'exchangeCurrency')
+            ->name('exchangeCurrency.post');
+});
 
-Route::middleware('auth')->prefix('wallet')->name('wallet.')->controller(WalletController::class)->group(function () {
-    Route::get('/', 'index')->name('home');
-    Route::patch('/', 'update')->name('update');
-    Route::post('/', 'store')->name('euro.create');
+Route::middleware('auth')->prefix('wallet/{id}')
+    ->name('wallet.')
+    ->controller(WalletController::class)
+    ->group(function () {
+        Route::get('/', 'index')->name('index');
+        Route::patch('/', 'update')->name('update');
+        Route::post('/', 'store')->name('store');
 });

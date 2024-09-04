@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('wallet_euros', function (Blueprint $table) {
             $table->id();
             $table->string('user_name')->nullable();
-            $table->float('count')->default('00.00');
+            $table->float('value')->default('0');
             $table->timestamps();
         });
     }

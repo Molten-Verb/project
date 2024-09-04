@@ -12,7 +12,7 @@
                 @if (empty($isWalletEuroCreate))
                     <div class="p-6 text-gray-900">
                         <p>{{ __('Ваш кошелек в валюте Euro ещё не создан') }}</p>
-                        {{ html()->modelForm('POST', route('wallet.euro.create'))->open() }}
+                        {{ html()->modelForm('POST', route('wallet.store', ['id => $id']))->open() }}
                         <x-primary-button>{{ __('Создать кошелек EUR') }}</x-primary-button>
                         {{ html()->closeModelForm() }}
                     </div>
@@ -28,7 +28,7 @@
                 </div>
 
                 <div class="p-6 text-gray-900">
-                    {{ html()->modelForm('PUT', route('wallet.update'))->open() }}
+                    {{ html()->modelForm('PUT', route('wallet.update', ['id => $id']))->open() }}
 
                     {{  html()->label('введите сумму', 'value') }}
                     {{ html()->number($name = 'value', $value = 00.00, $min = null, $max = null, $step = 0.01) }}

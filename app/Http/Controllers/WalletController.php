@@ -23,6 +23,8 @@ class WalletController extends Controller
     public function index(Request $request): View
     {
         $user = Auth::user();
+        $id = $user->id;
+
         $isWalletEuroCreate = WalletEuro::firstWhere('user_name', $user->name);
         $walletRuble = WalletRuble::where('user_name', '=', $user->name)
                                 ->orderBy('updated_at', 'DESC')
@@ -41,7 +43,7 @@ class WalletController extends Controller
         $dollarCount = $walletRuble[0]['count'];
         $euroCount = $walletRuble[0]['count'];
 
-        return view('wallet', compact('isWalletEuroCreate', 'rubleCount', 'dollarCount', 'euroCount'));
+        return view('wallet', compact('isWalletEuroCreate', 'id', 'rubleCount', 'dollarCount', 'euroCount'));
     }
 
     /**

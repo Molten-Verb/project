@@ -11,6 +11,6 @@ class WalletRuble extends Model
 
     protected $fillable = [
         'user_name',
-		'RUB',
+		'value',
     ];
 }

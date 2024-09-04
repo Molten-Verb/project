@@ -80,7 +80,7 @@
 
         $.ajax({
             type: "POST",
-            url: "{{ url('currency') }}",
+            url: "{{ route('exchangeCurrency.post') }}",
             data: data,
             processData: false,
             contentType: false,
