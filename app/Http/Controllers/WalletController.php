@@ -25,31 +25,26 @@ class WalletController extends Controller
         $user = Auth::user();
         $id = $user->id;
 
-        $isWalletEuroCreate = WalletEuro::firstWhere('user_name', $user->name);
-        $walletRuble = WalletRuble::where('user_name', '=', $user->name)
-                                ->orderBy('updated_at', 'DESC')
-                                ->first()
-                                ->get('count');
-        $walletDollar = WalletDollar::where('user_name', '=', $user->name)
-                                ->orderBy('updated_at', 'DESC')
-                                ->first()
-                                ->get('count');
-        $walletEuro = WalletDollar::where('user_name', '=', $user->name)
-                                ->orderBy('updated_at', 'DESC')
-                                ->first()
-                                ->get('count');
+        $isWalletEuroCreate = WalletEuro::firstWhere('user_id', $id);
 
-        $rubleCount = $walletRuble[0]['count'];
-        $dollarCount = $walletRuble[0]['count'];
-        $euroCount = $walletRuble[0]['count'];
+        $walletRuble = WalletRuble::where('user_id', '=', $id)
+                                ->orderBy('updated_at', 'DESC')
+                                ->first();
 
-        return view('wallet', compact('isWalletEuroCreate', 'id', 'rubleCount', 'dollarCount', 'euroCount'));
+        $walletDollar = WalletDollar::where('user_id', '=', $id)
+                                ->orderBy('updated_at', 'DESC')
+                                ->first();
+
+        $walletEuro = WalletEuro::where('user_id', '=', $id)
+                                ->orderBy('updated_at', 'DESC')
+                                ->first();
+
+        $rubleAmount = $walletRuble->value;
+        $dollarAmount = $walletDollar->value;
+        $euroAmount = $walletEuro ? $walletEuro->value : 0;
+
+        return view('wallet', compact('isWalletEuroCreate', 'id', 'rubleAmount', 'dollarAmount', 'euroAmount'));
     }
-
-    /**
-     * Show the form for creating a new resource.
-     */
-
 
     /**
      * Store a newly created resource in storage.
@@ -57,44 +52,52 @@ class WalletController extends Controller
     public function store(Request $request)
     {
         $user = Auth::user();
+        $id = $user->id;
 
         $walletEuro = WalletEuro::create([
-            'user_name' => $user->name
+            'user_id' => $user->id
         ]);
 
         return redirect()
-            ->route('wallet.home');
+        ->route('wallet.index', ['id' => $id]);
     }
 
-    /**
-     * Display the specified resource.
-     */
-    public function show(string $id)
+    public function update(Request $request)
     {
-        //
-    }
+        $user = Auth::user();
+        $id = $user->id;
 
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(string $id)
-    {
-        //
-    }
+        $currency = $request->currency;
+        $value = $request->value;
 
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, string $id)
-    {
-        //
-    }
+        if($currency === 'RUB') {
+            $walletRuble = WalletRuble::where('user_id', '=', $id)
+                                ->orderBy('updated_at', 'DESC')
+                                ->first();
 
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(string $id)
-    {
-        //
+            $walletRuble->value += $value;
+            $walletRuble->save();
+        }
+
+        if($currency === 'USD') {
+            $walletDollar = WalletDollar::where('user_id', '=', $id)
+                                ->orderBy('updated_at', 'DESC')
+                                ->first();
+
+            $walletDollar->value += $value;
+            $walletDollar->save();
+        }
+
+        if($currency === 'EUR') {
+            $walletEuro = WalletEuro::where('user_id', '=', $id)
+                                ->orderBy('updated_at', 'DESC')
+                                ->first();
+
+            $walletEuro->value += $value;
+            $walletEuro->save();
+        }
+
+        return redirect()
+        ->route('wallet.index', ['id' => $id]);
     }
 }

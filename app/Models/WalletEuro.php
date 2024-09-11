@@ -10,7 +10,7 @@ class WalletEuro extends Model
     use HasFactory;
 
     protected $fillable = [
-        'user_name',
+        'user_id',
 		'value',
     ];
 }

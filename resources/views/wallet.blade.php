@@ -21,20 +21,22 @@
                 <div class="p-6 text-gray-900">
                     <p>{{ __("Ваш баланс") }}</p>
                     <div>
-                        <a style="display: inline-block; border: 1px solid black; padding: 5px; text-align: center;">{{ $rubleCount }} RUB</a>
-                        <a style="display: inline-block; border: 1px solid black; padding: 5px; text-align: center;">{{ $dollarCount }} USD</a>
-                        <a style="display: inline-block; border: 1px solid black; padding: 5px; text-align: center;">{{ $euroCount }} EUR</a>
+                        <a style="display: inline-block; border: 1px solid black; padding: 5px; text-align: center;">{{ $rubleAmount }} RUB</a>
+                        <a style="display: inline-block; border: 1px solid black; padding: 5px; text-align: center;">{{ $dollarAmount }} USD</a>
+                        <a style="display: inline-block; border: 1px solid black; padding: 5px; text-align: center;">{{ $euroAmount }} EUR</a>
                     </div>
                 </div>
 
                 <div class="p-6 text-gray-900">
-                    {{ html()->modelForm('PUT', route('wallet.update', ['id => $id']))->open() }}
+                    {{ html()->modelForm('POST', route('wallet.update', ['id' => $id]))->open() }}
+                    @csrf
+                    @method('patch')
 
                     {{  html()->label('введите сумму', 'value') }}
-                    {{ html()->number($name = 'value', $value = 00.00, $min = null, $max = null, $step = 0.01) }}
+                    {{ html()->number('value', 00.00, $min = null, $max = null, $step = 0.01) }}
 
                     {{  html()->label('Выберите валюту', 'currency') }}
-                    {{  html()->select('валюта', ['RUB' => 'RUB', 'USD' => 'USD', 'EUR' => 'EUR']) }}
+                    {{  html()->select('currency', ['RUB' => 'RUB', 'USD' => 'USD', 'EUR' => 'EUR']) }}
 
                     <div class="p-6 text-gray-900">
                         <x-primary-button>{{ __('Пополнить') }}</x-primary-button>

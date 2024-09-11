@@ -48,9 +48,9 @@ require __DIR__.'/auth.php';
 Route::prefix('currency')
     ->controller(CurrencyController::class)
     ->group( function () {
-        Route::get('/currency', 'index')
+        Route::get('/', 'index')
             ->name('currency.index');
-        Route::post('/currency', 'exchangeCurrency')
+        Route::post('/', 'exchangeCurrency')
             ->name('exchangeCurrency.post');
 });
 

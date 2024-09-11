@@ -45,11 +45,11 @@ class RegisteredUserController extends Controller
         ]);
 
         $rublesWallet = WalletRuble::create([
-            'user_name' => $request->name,
+            'user_id' => $user->id
         ]);
 
         $dollarsWallet = WalletDollar::create([
-            'user_name' => $request->name,
+            'user_id' => $user->id
         ]);
 
         event(new Registered($user));

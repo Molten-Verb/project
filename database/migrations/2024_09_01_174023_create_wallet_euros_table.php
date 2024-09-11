@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('wallet_euros', function (Blueprint $table) {
             $table->id();
-            $table->string('user_name')->nullable();
+            $table->bigInteger('user_id')->nullable();
             $table->float('value')->default('0');
             $table->timestamps();
         });
