@@ -59,6 +59,7 @@ Route::middleware('auth')->prefix('wallet/{id}')
     ->controller(WalletController::class)
     ->group(function () {
         Route::get('/', 'index')->name('index');
+        Route::get('/transaction_history', 'show')->name('history');
         Route::patch('/', 'update')->name('update');
         Route::post('/', 'store')->name('store');
 });

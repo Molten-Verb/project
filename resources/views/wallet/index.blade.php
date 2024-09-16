@@ -20,10 +20,17 @@
 
                 <div class="p-6 text-gray-900">
                     <p>{{ __("Ваш баланс") }}</p>
-                    <div>
-                        <a style="display: inline-block; border: 1px solid black; padding: 5px; text-align: center;">{{ $rubleAmount }} RUB</a>
-                        <a style="display: inline-block; border: 1px solid black; padding: 5px; text-align: center;">{{ $dollarAmount }} USD</a>
-                        <a style="display: inline-block; border: 1px solid black; padding: 5px; text-align: center;">{{ $euroAmount }} EUR</a>
+                    <div style="display: flex; justify-content: space-between; align-items: center;">
+                        <div>
+                            <a style="display: inline-block; border: 1px solid black; padding: 5px; text-align: center;">{{ $rubleAmount }} RUB</a>
+                            <a style="display: inline-block; border: 1px solid black; padding: 5px; text-align: center;">{{ $dollarAmount }} USD</a>
+                            <a style="display: inline-block; border: 1px solid black; padding: 5px; text-align: center;">{{ $euroAmount }} EUR</a>
+                        </div>
+                        <div>
+                            <x-primary-button onclick="window.location.href='{{ route('wallet.history', ['id => $id']) }}'" style="background-color: #007bff; color: white;">
+                                История транзакций
+                            </x-primary-button>
+                        </div>
                     </div>
                 </div>
 
@@ -39,7 +46,9 @@
                     {{  html()->select('currency', ['RUB' => 'RUB', 'USD' => 'USD', 'EUR' => 'EUR']) }}
 
                     <div class="p-6 text-gray-900">
-                        <x-primary-button>{{ __('Пополнить') }}</x-primary-button>
+                        <x-primary-button style="background-color: #28a745; color: white;">
+                            {{ __('Пополнить') }}
+                        </x-primary-button>
                     </div>
 
                     {{ html()->closeModelForm() }}

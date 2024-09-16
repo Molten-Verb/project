@@ -2,16 +2,17 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\WalletDollar;
-use App\Models\WalletEuro;
-use App\Models\WalletRuble;
 use App\Models\User;
 use Illuminate\View\View;
+use App\Models\WalletEuro;
+use App\Models\WalletRuble;
+use App\Models\WalletDollar;
 use Illuminate\Http\Request;
 
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Http\RedirectResponse;
 
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Redirect;
 use App\Http\Requests\ProfileUpdateRequest;
 
@@ -43,7 +44,30 @@ class WalletController extends Controller
         $dollarAmount = $walletDollar->value;
         $euroAmount = $walletEuro ? $walletEuro->value : 0;
 
-        return view('wallet', compact('isWalletEuroCreate', 'id', 'rubleAmount', 'dollarAmount', 'euroAmount'));
+        return view('wallet.index', compact('isWalletEuroCreate', 'id', 'rubleAmount', 'dollarAmount', 'euroAmount'));
+    }
+
+    public function show(): View
+    {
+        $user = Auth::user();
+        $id = $user->id;
+
+        $rubleTransactions = DB::table('wallet_rubles')
+                        ->where('user_id', '=', $id)
+                        ->orderBy('updated_at', 'DESC')
+                        ->get();
+
+        $dollarTransactions = DB::table('wallet_dollars')
+                        ->where('user_id', '=', $id)
+                        ->orderBy('updated_at', 'DESC')
+                        ->get();
+
+        $euroTransactions = DB::table('wallet_euros')
+                        ->where('user_id', '=', $id)
+                        ->orderBy('updated_at', 'DESC')
+                        ->get();
+
+        return view('wallet.show', compact('rubleTransactions', 'dollarTransactions', 'euroTransactions'));
     }
 
     /**
@@ -70,31 +94,25 @@ class WalletController extends Controller
         $currency = $request->currency;
         $value = $request->value;
 
-        if($currency === 'RUB') {
-            $walletRuble = WalletRuble::where('user_id', '=', $id)
-                                ->orderBy('updated_at', 'DESC')
-                                ->first();
-
-            $walletRuble->value += $value;
-            $walletRuble->save();
+        if ($currency === 'RUB') {
+            WalletRuble::create([
+                'user_id' => $id,
+                'value' => $value,
+            ]);
         }
 
         if($currency === 'USD') {
-            $walletDollar = WalletDollar::where('user_id', '=', $id)
-                                ->orderBy('updated_at', 'DESC')
-                                ->first();
-
-            $walletDollar->value += $value;
-            $walletDollar->save();
+            WalletDollar::create([
+                'user_id' => $id,
+                'value' => $value,
+            ]);
         }
 
         if($currency === 'EUR') {
-            $walletEuro = WalletEuro::where('user_id', '=', $id)
-                                ->orderBy('updated_at', 'DESC')
-                                ->first();
-
-            $walletEuro->value += $value;
-            $walletEuro->save();
+            WalletEuro::create([
+                'user_id' => $id,
+                'value' => $value,
+            ]);
         }
 
         return redirect()
