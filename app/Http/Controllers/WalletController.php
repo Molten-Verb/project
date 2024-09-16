@@ -30,19 +30,19 @@ class WalletController extends Controller
 
         $walletRuble = WalletRuble::where('user_id', '=', $id)
                                 ->orderBy('updated_at', 'DESC')
-                                ->first();
+                                ->get();
 
         $walletDollar = WalletDollar::where('user_id', '=', $id)
                                 ->orderBy('updated_at', 'DESC')
-                                ->first();
+                                ->get();
 
         $walletEuro = WalletEuro::where('user_id', '=', $id)
                                 ->orderBy('updated_at', 'DESC')
-                                ->first();
+                                ->get();
 
-        $rubleAmount = $walletRuble->value;
-        $dollarAmount = $walletDollar->value;
-        $euroAmount = $walletEuro ? $walletEuro->value : 0;
+        $rubleAmount = $walletRuble->sum('value');
+        $dollarAmount = $walletDollar->sum('value');
+        $euroAmount = $walletEuro ? $walletEuro->sum('value') : 0;
 
         return view('wallet.index', compact('isWalletEuroCreate', 'id', 'rubleAmount', 'dollarAmount', 'euroAmount'));
     }
