@@ -11,10 +11,11 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('wallet_rubles', function (Blueprint $table) {
+        Schema::create('wallets', function (Blueprint $table) {
             $table->id();
-            $table->bigInteger('user_id')->nullable();
-            $table->float('value')->default('0');
+            $table->bigInteger('user_id');
+            $table->bigInteger('balance')->default('0');
+            $table->string('currency');
             $table->timestamps();
         });
     }
@@ -24,6 +25,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('wallet_rubles');
+        Schema::dropIfExists('wallets');
     }
 };

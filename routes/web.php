@@ -33,7 +33,7 @@ Route::middleware('auth')->prefix('profile')
     ->group(function () {
         Route::get('/', 'edit')->name('edit');
         Route::patch('/', 'update')->name('update');
-        Route::post('/', 'store')->name('avatar.update');
+        Route::post('/', 'store')->name('image.update');
         Route::delete('/', 'destroy')->name('destroy');
 });
 
