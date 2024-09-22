@@ -25,21 +25,22 @@ class WalletController extends Controller
     {
         $id = Auth::user()->id;
 
+        // Получаем кошельки пользователя
         $userWallets = Wallet::where('user_id', '=', $id)->get();
-        $isWalletEuroCreate = $userWallets->firstWhere('currency_type', 'euro');
 
-        $idRubleWallet = $userWallets->firstWhere('currency_type', 'ruble')->id;
-        $idDollarWallet = $userWallets->firstWhere('currency_type', 'dollar')->id;
+        $isWalletEuroCreate = $userWallets->firstWhere('currency_type', 'EUR');
 
-        $rubleAmount = Transaction::where('wallet_id', '=', $idRubleWallet)->sum('value');
-        $dollarAmount = Transaction::where('wallet_id', '=', $idDollarWallet)->sum('value');
+        // Получаем суммы по валютам
+        $amounts = collect(['RUB', 'USD', 'EUR'])
+            ->mapWithKeys(function ($currency) use ($userWallets) {
+                $walletId = $userWallets->firstWhere('currency_type', $currency)->id ?? null;
+                $amount = $walletId ? Transaction::where('wallet_id', $walletId)->sum('value') : 0;
+                return [$currency => $amount];
+            });
 
-        $euroAmount = 0;
-
-        if (!empty($isWalletEuroCreate)) {
-            $idEuroWallet = $userWallets->firstWhere('currency_type', 'euro')->id;
-            $euroAmount = Transaction::where('wallet_id', '=', $idEuroWallet)->sum('value');
-        }
+        $rubleAmount = $amounts['RUB'];
+        $dollarAmount = $amounts['USD'];
+        $euroAmount = $amounts['EUR'];
 
         return view('wallet.index', compact('isWalletEuroCreate', 'id', 'rubleAmount', 'dollarAmount', 'euroAmount'));
     }
@@ -48,15 +49,21 @@ class WalletController extends Controller
     {
         $id = Auth::user()->id;
 
+        // Получаем кошельки пользователя
         $userWallets = Wallet::where('user_id', '=', $id)->get();
 
-        $idRubleWallet = $userWallets->firstWhere('currency_type', 'ruble')->id;
-        $idDollarWallet = $userWallets->firstWhere('currency_type', 'dollar')->id;
-        $idEuroWallet = $userWallets->firstWhere('currency_type', 'euro')->id;
+         // Получаем транзакции для каждого кошелька
+        $transactions = collect(['RUB', 'USD', 'EUR'])
+            ->mapWithKeys(function ($currency) use ($userWallets) {
+                $walletId = $userWallets->firstWhere('currency_type', $currency)->id ?? null;
+                $transactions = $walletId ? Transaction::where('wallet_id', $walletId)->get() : collect([]);
 
-        $rubleTransactions = Transaction::where('wallet_id', '=', $idRubleWallet)->get();
-        $dollarTransactions = Transaction::where('wallet_id', '=', $idDollarWallet)->get();
-        $euroTransactions = Transaction::where('wallet_id', '=', $idEuroWallet)->get();
+                return [$currency => $transactions];
+            });
+
+        $rubleTransactions = $transactions['RUB'];
+        $dollarTransactions = $transactions['USD'];
+        $euroTransactions = $transactions['EUR'];
 
         return view('wallet.show', compact('rubleTransactions', 'dollarTransactions', 'euroTransactions'));
     }
@@ -78,43 +85,18 @@ class WalletController extends Controller
 
     public function update(Request $request)
     {
-        $user = Auth::user();
-        $id = $user->id;
+        $id = Auth::user()->id;
 
         $currency = $request->currency;
         $value = $request->value;
 
-        $userWallets = Wallet::where('user_id', '=', $id)->get();
+        // Получаем кошелек по валюте
+        $wallet = Wallet::where('user_id', $id)->firstWhere('currency_type', $currency);
 
-        $idRubleWallet = $userWallets->firstWhere('currency_type', 'ruble')->id;
-        $idDollarWallet = $userWallets->firstWhere('currency_type', 'dollar')->id;
-
-        if ($currency === 'RUB') {
-            $idRubleWallet = $userWallets->firstWhere('currency_type', 'ruble')->id;
-
-            Transaction::create([
-                'wallet_id' => $idRubleWallet,
-                'value' => $value,
-            ]);
-        }
-
-        if($currency === 'USD') {
-            $idDollarWallet = $userWallets->firstWhere('currency_type', 'dollar')->id;
-
-            Transaction::create([
-                'wallet_id' => $idDollarWallet,
-                'value' => $value,
-            ]);
-        }
-
-        if($currency === 'EUR') {
-            $idEuroWallet = $userWallets->firstWhere('currency_type', 'euro')->id;
-
-            Transaction::create([
-                'wallet_id' => $idEuroWallet,
-                'value' => $value,
-            ]);
-        }
+        Transaction::create([
+            'wallet_id' => $wallet->id,
+            'value' => $value,
+        ]);
 
         return redirect()->route('wallet.index', ['id' => $id]);
     }

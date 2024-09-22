@@ -4,7 +4,7 @@ namespace App\Enum;
 
 enum CurrencyType: string
 {
-    case RUB = 'ruble';
-    case USD = 'dollar';
-    case EUR = 'euro';
+    case RUB = 'RUB';
+    case USD = 'USD';
+    case EUR = 'EUR';
 }
