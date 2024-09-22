@@ -13,8 +13,7 @@ return new class extends Migration
     {
         Schema::create('transactions', function (Blueprint $table) {
             $table->id();
-            $table->bigInteger('user_id')->nullable();
-            $table->string('currency');
+            $table->bigInteger('wallet_id');
             $table->float('value');
             $table->timestamps();
         });

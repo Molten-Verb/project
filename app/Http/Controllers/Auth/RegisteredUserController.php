@@ -44,14 +44,6 @@ class RegisteredUserController extends Controller
             'password' => Hash::make($request->password),
         ]);
 
-        $rublesWallet = WalletRuble::create([
-            'user_id' => $user->id
-        ]);
-
-        $dollarsWallet = WalletDollar::create([
-            'user_id' => $user->id
-        ]);
-
         event(new Registered($user));
 
         Auth::login($user);

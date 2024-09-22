@@ -2,8 +2,9 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
+use App\Enum\CurrencyType;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class Wallet extends Model
 {
@@ -11,6 +12,6 @@ class Wallet extends Model
 
     protected $fillable = [
         'user_id',
-		'currency',
+		'currency_type',
     ];
 }
