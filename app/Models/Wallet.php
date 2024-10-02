@@ -2,8 +2,11 @@
 
 namespace App\Models;
 
-use App\Enum\CurrencyType;
+use App\Models\User;
+use App\Models\Transaction;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class Wallet extends Model
@@ -14,4 +17,14 @@ class Wallet extends Model
         'user_id',
 		'currency_type',
     ];
+
+    public function user(): BelongsTo
+    {
+        return $this->belongsTo(User::class);
+    }
+
+    public function transactions(): HasMany
+    {
+        return $this->hasMany(Transaction::class);
+    }
 }

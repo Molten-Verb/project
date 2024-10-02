@@ -3,8 +3,6 @@
 namespace App\Http\Controllers\Auth;
 
 use App\Models\User;
-use App\Models\WalletRuble;
-use App\Models\WalletDollar;
 use Illuminate\View\View;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rules;

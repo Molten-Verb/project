@@ -7,13 +7,21 @@
 
     <div class="py-12">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
-            <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
+            <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg" style="max-width: 800px;">
 
                 @if (empty($isWalletEuroCreate))
                     <div class="p-6 text-gray-900">
-                        <p>{{ __('Ваш кошелек в валюте Euro ещё не создан') }}</p>
+                        <p>{{ __('Создайте кошелек') }}</p>
                         {{ html()->modelForm('POST', route('wallet.store', ['id => $id']))->open() }}
-                        <x-primary-button>{{ __('Создать кошелек EUR') }}</x-primary-button>
+                            @csrf
+                            @method('post')
+
+                            {{  html()->label('Выберите валюту кошелька', 'currency') }}
+                            {{  html()->select('currency', ['USD' => 'USD', 'EUR' => 'EUR']) }}
+
+                            <x-primary-button style="background-color: #282aa7; color: white;">
+                                {{ __('Создать кошелек') }}
+                            </x-primary-button>
                         {{ html()->closeModelForm() }}
                     </div>
                 @endif
