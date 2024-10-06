@@ -24,7 +24,7 @@ class UserWalletTest extends TestCase
         $this->actingAs($user); // авторизация юзера
 
         $this->assertDatabaseHas('wallets', [
-            'wallet_id' => $user->id,
+            'user_id' => $user->id,
             'currency_type' => CurrencyType::RUB->value,
         ]);
     }

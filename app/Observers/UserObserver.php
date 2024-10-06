@@ -14,11 +14,8 @@ class UserObserver
      */
     public function created(User $user): void
     {
-        $userId = Auth::user()->id;
-
-        Wallet::create([
-            'wallet_id' => $userId,
-            'currency_type' => CurrencyType::RUB
+        $user->wallets()->create([
+            'currency_type' => CurrencyType::RUB->value
         ]);
     }
 }

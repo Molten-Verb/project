@@ -4,97 +4,71 @@ namespace App\Http\Controllers;
 
 use App\Models\User;
 use App\Models\Wallet;
-use App\Models\Transaction;
 use Illuminate\View\View;
 use App\Enums\CurrencyType;
+use App\Models\Transaction;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Redirect;
-use App\Http\Requests\ProfileUpdateRequest;
+use App\Http\Requests\TransactionRequest;
+use App\Http\Requests\WalletCreateRequest;
+use App\Http\Services\Wallet\WalletService;
+use App\Http\Services\Wallet\WalletExistsChecker;
 
 class WalletController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
-    public function index($request): View
+    public function index(): View
     {
-        $id = Auth::user()->id;
+        $user = Auth::user();
+        $id = $user->id;
 
         // Получаем кошельки пользователя
-        $userWallets = Wallet::where('wallet_id', '=', $id)->get();
+        $userWallets = $user->wallets;
 
-        $isWalletEuroCreate = $userWallets->firstWhere('currency_type', 'EUR');
+        $walletExistsChecker = new WalletExistsChecker;
+        $existsWallets = $walletExistsChecker->findMissingWallets($userWallets);
 
-        // Получаем суммы по валютам
-        $amounts = collect(CurrencyType::cases()) // Получаем все значения enum
-            ->mapWithKeys(function (CurrencyType $currency) use ($userWallets) {
-            $walletId = $userWallets->firstWhere('currency_type', $currency->value)->id ?? null; // $walletId: int|null
-            $amount = $walletId ? Transaction::where('wallet_id', $walletId)->sum('value') : 0; // $amount: int
+        $walletService = new WalletService;
+        $balance = $walletService->getBalance($userWallets);
 
-            return [$currency->value => $amount]; // Используем $currency->value как ключ
-        });
-
-        $rubleAmount = $amounts[CurrencyType::RUB->value];
-        $dollarAmount = $amounts[CurrencyType::USD->value];
-        $euroAmount = $amounts[CurrencyType::EUR->value];
-
-        return view('wallet.index', compact('isWalletEuroCreate', 'id', 'rubleAmount', 'dollarAmount', 'euroAmount'));
+        return view('wallet.index', compact('existsWallets', 'id', 'balance'));
     }
 
     public function show(): View
     {
-        $id = Auth::user()->id;
+        $user = Auth::user();
+        $userWallets = $user->wallets()->with('transactions')->get();
 
-        // Получаем кошельки пользователя
-        $userWallets = Wallet::where('wallet_id', '=', $id)->get();
-
-         // Получаем транзакции для каждого кошелька
-        $transactions = collect(['RUB', 'USD', 'EUR'])
-            ->mapWithKeys(function ($currency) use ($userWallets) {
-                $walletId = $userWallets->firstWhere('currency_type', $currency)->id ?? null;
-                $transactions = $walletId ? Transaction::where('wallet_id', $walletId)->get() : collect([]);
-
-                return [$currency => $transactions];
-            });
-
-        $rubleTransactions = $transactions['RUB'];
-        $dollarTransactions = $transactions['USD'];
-        $euroTransactions = $transactions['EUR'];
-
-        return view('wallet.show', compact('rubleTransactions', 'dollarTransactions', 'euroTransactions'));
+        return view('wallet.show', compact('userWallets'));
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
-    public function store($request)
+    public function store(WalletCreateRequest $request): RedirectResponse
     {
-        $id = Auth::user()->id;
+        $user = Auth::user();
+        $id = $user->id;
 
-        Wallet::create([
-            'wallet_id' => $id,
-            'currency_type' => CurrencyType::EUR
+        $validated = $request->validated();
+
+        $user->wallets()->create([
+            'currency_type' => $validated['currency']
         ]);
 
         return redirect()->route('wallet.index', ['id' => $id]);
     }
 
-    public function update($request)
+    public function update(TransactionRequest $request): RedirectResponse
     {
-        $id = Auth::user()->id;
+        $user = Auth::user();
+        $id = $user->id;
 
-        $currency = $request->currency;
-        $value = $request->value;
+        $validated = $request->validated();
 
         // Получаем кошелек по валюте
-        $wallet = Wallet::where('user_id', $id)->firstWhere('currency_type', $currency);
+        $wallet = $user->wallets()->firstWhere('currency_type', $validated['currency']);
 
-        Transaction::create([
-            'wallet_id' => $wallet->id,
-            'value' => $value,
+        $wallet->transactions()->create([
+            'value' => $validated['value'],
         ]);
 
         return redirect()->route('wallet.index', ['id' => $id]);

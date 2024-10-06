@@ -13,9 +13,11 @@ return new class extends Migration
     {
         Schema::create('transactions', function (Blueprint $table) {
             $table->id();
-            $table->bigInteger('wallet_id');
+            $table->unsignedBigInteger('wallet_id')->nullable();
             $table->float('value');
             $table->timestamps();
+
+            $table->foreign('wallet_id')->references('id')->on('wallets');
         });
     }
 
