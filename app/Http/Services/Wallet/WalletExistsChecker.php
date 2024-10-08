@@ -3,21 +3,22 @@
 namespace App\Http\Services\Wallet;
 
 use App\Enums\CurrencyType;
+use Illuminate\Support\Collection;
 
 class WalletExistsChecker
 {
     protected array $currencises = [];
 
-    public function findMissingWallets(object $wallets): array
+    public function findMissingWallets(Collection $wallets): array
     {
         $existsWallets = $wallets->pluck('currency_type')->toArray();
 
         $currencies = [];
-        foreach (CurrencyType::cases() as $value)
+        foreach (CurrencyType::cases() as $case)
         {
-            if (!in_array($value->name, $existsWallets))
+            if (!in_array($case->name, $existsWallets))
             {
-                $currencies[$value->name] = $value->value;
+                $currencies[$case->name] = $case->value;
             }
         }
 

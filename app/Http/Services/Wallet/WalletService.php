@@ -8,7 +8,6 @@ use App\Models\Transaction;
 class WalletService
 {
     protected array $balance;
-    protected $transactions;
 
     public function getBalance(object $wallets): array
     {

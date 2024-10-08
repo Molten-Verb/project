@@ -2,6 +2,8 @@
 
 namespace App\Http\Requests;
 
+use App\Enums\CurrencyType;
+use Illuminate\Validation\Rule;
 use Illuminate\Foundation\Http\FormRequest;
 
 class WalletCreateRequest extends FormRequest
@@ -16,7 +18,7 @@ class WalletCreateRequest extends FormRequest
         return [
             'currency' => [
                 'required',
-                'string'
+                Rule::enum(CurrencyType::class)
             ]
         ];
     }
