@@ -12,7 +12,7 @@ class SaveImage
     protected ?string $url;
     protected ?string $nameFolder;
 
-    public function saveImage(UploadedFile $image, string $nameFolder = null):void
+    public function saveImage($image, string $nameFolder = null):void
     {
         $imageOriginalName = $image->getClientOriginalName();
 

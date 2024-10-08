@@ -13,7 +13,7 @@
         <img class="TopNavBtn__profileImg" src="{{ Auth::user()->avatar }}" style="width: 100px; height: 100px; border-radius: 75px; box-shadow: 0 0 5px rgba(0, 0, 0, 0.5);">
     </div>
 
-    <form action="{{ route('profile.avatar.update') }}" method="post" class="mt-6 space-y-6" enctype="multipart/form-data">
+    <form action="{{ route('profile.image.update') }}" method="post" class="mt-6 space-y-6" enctype="multipart/form-data">
         @csrf
         @method('post')
 

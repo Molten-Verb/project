@@ -12,8 +12,14 @@
 
                 <!-- Navigation Links -->
                 <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
+                    <x-nav-link :href="url('/')" :active="request()->routeIs('dashboard')">
+                        {{ __('Home') }}
+                    </x-nav-link>
                     <x-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')">
                         {{ __('Dashboard') }}
+                    </x-nav-link>
+                    <x-nav-link :href="route('wallet.index', ['id => $id'])" :active="request()->routeIs('dashboard')">
+                        {{ __('Wallet') }}
                     </x-nav-link>
                 </div>
             </div>
@@ -24,7 +30,7 @@
                     <x-slot name="trigger">
                         <button class="inline-flex items-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md text-gray-500 bg-white hover:text-gray-700 focus:outline-none transition ease-in-out duration-150">
                             <div>
-                                <img class="TopNavBtn__profileImg" src="{{ Auth::user()->avatar }}" style="width: 50px; height: 50px; border-radius: 75px; box-shadow: 0 0 5px rgba(0, 0, 0, 0.5);"> 
+                                <img class="TopNavBtn__profileImg" src="{{ Auth::user()->avatar }}" style="width: 50px; height: 50px; border-radius: 75px; box-shadow: 0 0 5px rgba(0, 0, 0, 0.5);">
                             </div>
 
                             <div>

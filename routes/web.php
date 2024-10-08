@@ -1,8 +1,10 @@
 <?php
 
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AvatarController;
 use App\Http\Controllers\SocialController;
+use App\Http\Controllers\WalletController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\CurrencyController;
 
@@ -25,21 +27,39 @@ Route::get('/dashboard', function () {
     return view('dashboard');
 })->middleware(['auth', 'verified'])->name('dashboard');
 
-Route::middleware('auth')->prefix('profile')->name('profile.')->controller(ProfileController::class)->group(function () {
-    Route::get('/', 'edit')->name('edit');
-    Route::patch('/', 'update')->name('update');
-    Route::post('/', 'store')->name('avatar.update');
-    Route::delete('/', 'destroy')->name('destroy');
+Route::middleware('auth')->prefix('profile')
+    ->name('profile.')
+    ->controller(ProfileController::class)
+    ->group(function () {
+        Route::get('/', 'edit')->name('edit');
+        Route::patch('/', 'update')->name('update');
+        Route::post('/', 'store')->name('image.update');
+        Route::delete('/', 'destroy')->name('destroy');
 });
 
 Route::get('/auth/redirect', [SocialController::class, 'redirectToGoogle'])
     ->name('google.auth');
+
 Route::get('/auth/callback', [SocialController::class, 'googleCallback'])
     ->name('google.callback');
 
 require __DIR__.'/auth.php';
 
-Route::get('/currency', [CurrencyController::class, 'index'])
-    ->name('currency');
-Route::post('/currency', [CurrencyController::class, 'exchangeCurrency'])
-    ->name('exchangeCurrency');
+Route::prefix('currency')
+    ->controller(CurrencyController::class)
+    ->group( function () {
+        Route::get('/', 'index')
+            ->name('currency.index');
+        Route::post('/', 'exchangeCurrency')
+            ->name('exchangeCurrency.post');
+});
+
+Route::middleware('auth')->prefix('wallet/{id}')
+    ->name('wallet.')
+    ->controller(WalletController::class)
+    ->group(function () {
+        Route::get('/', 'index')->name('index');
+        Route::get('/transaction_history', 'show')->name('history');
+        Route::patch('/', 'update')->name('update');
+        Route::post('/', 'store')->name('store');
+});
