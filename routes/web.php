@@ -7,6 +7,7 @@ use App\Http\Controllers\SocialController;
 use App\Http\Controllers\WalletController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\CurrencyController;
+use App\Http\Controllers\MarketRacerController;
 
 /*
 |--------------------------------------------------------------------------
@@ -62,4 +63,11 @@ Route::middleware('auth')->prefix('wallet/{id}')
         Route::get('/transaction_history', 'show')->name('history');
         Route::patch('/', 'update')->name('update');
         Route::post('/', 'store')->name('store');
+});
+
+Route::prefix('market')
+    ->name('market.')
+    ->controller(MarketRacerController::class)
+    ->group(function () {
+        Route::get('/', 'index')->name('index');
 });
