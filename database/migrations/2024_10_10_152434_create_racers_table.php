@@ -16,11 +16,11 @@ return new class extends Migration
             $table->string('name');
             $table->string('country');
             $table->unsignedBigInteger('price')->nullable();
-            $table->unsignedBigInteger('holder')->nullable();
+            $table->unsignedBigInteger('user_id')->nullable();
             $table->string('avatar')->nullable();
             $table->timestamps();
 
-            $table->foreign('holder')->references('id')->on('users');
+            $table->foreign('user_id')->references('id')->on('users');
         });
     }
 

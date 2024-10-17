@@ -2,16 +2,92 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\User;
 use App\Models\Racer;
 use Illuminate\View\View;
+use App\Enums\CurrencyType;
 use Illuminate\Http\Request;
+
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Auth;
+use App\Http\Services\Wallet\WalletService;
 
 class MarketRacerController extends Controller
 {
-    public function index(): View
+    public function index(Request $request): View
     {
-        $racersList = Racer::get();
+        $sortColumn1 = $request->sort_column1 ?? 'id';
+        $sortDirection1 = $request->sort_direction1 ?? 'asc';
+        $sortColumn2 = $request->sort_column2 ?? 'id';
+        $sortDirection2 = $request->sort_direction2 ?? 'asc';
 
-        return view('market', compact('racersList'));
+        $racersList = Racer::orderBy($sortColumn1, $sortDirection1)
+                            ->orderBy($sortColumn2, $sortDirection2)->get();
+
+        $allUsers = User::get();
+
+        return view('market', compact('racersList', 'allUsers'));
+    }
+
+    public function buy(Request $request)
+    {
+        $user = Auth::user();
+        $userWallets = $user->wallets;
+
+        $walletService = new WalletService;
+        $balance = $walletService->getBalance($userWallets);
+
+        $walletUSD = $userWallets->firstWhere('currency_type', CurrencyType::USD->value);
+
+        $racer = Racer::where('id', $request->racer_id);
+
+        DB::transaction(function () use ($balance, $racer, $walletUSD, $user) {
+
+            if($balance[CurrencyType::USD->value] >= $racer->value('price')) {
+                $walletUSD->transactions()->create([
+                    'value' => -$racer->value('price')
+                ]);
+
+                $racer->update([
+                    'user_id' => $user->id
+                ]);
+            } else {
+                //throw new \Exception('Недостаточно средств');
+                return redirect()->route('market.index')->with('status', 'unsuccessfully purchased');
+            }
+        });
+
+        return redirect()->route('market.index')->with('status', 'successfully purchased');
+    }
+
+    public function sell(Request $request)
+    {
+        $user = Auth::user();
+        $userWallets = $user->wallets;
+
+        $walletService = new WalletService;
+        $balance = $walletService->getBalance($userWallets);
+
+        $walletUSD = $userWallets->firstWhere('currency_type', CurrencyType::USD->value);
+
+        $racer = Racer::where('id', $request->racer_id);
+
+        DB::transaction(function () use ($balance, $racer, $walletUSD, $user) {
+
+            if(!empty($racer->value('user_id'))) {
+                $walletUSD->transactions()->create([
+                    'value' => $racer->value('price')
+                ]);
+
+                $racer->update([
+                    'user_id' => null
+                ]);
+            } else {
+                //throw new \Exception('Гонщик не приобритен');
+                return redirect()->route('market.index')->with('status', 'unsuccessfully sold');
+            }
+        });
+
+        return redirect()->route('market.index')->with('status', 'successfully sold');
     }
 }

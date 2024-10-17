@@ -70,4 +70,6 @@ Route::prefix('market')
     ->controller(MarketRacerController::class)
     ->group(function () {
         Route::get('/', 'index')->name('index');
+        Route::post('/buy/{racer_id}', 'buy')->name('buy');
+        Route::post('/sell/{racer_id}', 'sell')->name('sell');
 });
