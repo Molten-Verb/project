@@ -90,8 +90,6 @@
                                             @csrf
                                             @method('post')
 
-                                            {{ html()->hidden($name = 'racer_id', $value = $racer->id) }}
-
                                             <button
                                                 class="bg-green-500 shadow-green-500 shadow-lg shadow-green-500/50
                                                 hover:bg-green-700 text-white font-bold py-2 px-4 rounded">Купить

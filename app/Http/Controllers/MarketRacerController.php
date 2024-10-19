@@ -33,29 +33,34 @@ class MarketRacerController extends Controller
     {
         $user = Auth::user();
         $userWallets = $user->wallets;
+        $racerId = $request->route('racer_id');
 
         $walletService = new WalletService;
         $balance = $walletService->getBalance($userWallets);
 
         $walletUSD = $userWallets->firstWhere('currency_type', CurrencyType::USD->value);
 
-        $racer = Racer::where('id', $request->racer_id);
+        $racer = Racer::where('id', $racerId);
 
-        DB::transaction(function () use ($balance, $racer, $walletUSD, $user) {
+        try {
+            DB::transaction(function () use ($balance, $racer, $walletUSD, $user) {
 
-            if($balance[CurrencyType::USD->value] >= $racer->value('price')) {
-                $walletUSD->transactions()->create([
-                    'value' => -$racer->value('price')
-                ]);
+                if($balance[CurrencyType::USD->value] >= $racer->value('price')) {
+                    $walletUSD->transactions()->create([
+                        'value' => -$racer->value('price')
+                    ]);
 
-                $racer->update([
-                    'user_id' => $user->id
-                ]);
-            } else {
-                //throw new \Exception('Недостаточно средств');
-                return redirect()->route('market.index')->with('status', 'unsuccessfully purchased');
-            }
-        });
+                    $racer->update([
+                        'user_id' => $user->id
+                    ]);
+                } else {
+                    throw new \Exception('Недостаточно средств');
+
+                }
+            });
+        } catch (\Exception $exeption) {
+            return redirect()->route('market.index')->with('status', 'unsuccessfully purchased');
+        }
 
         return redirect()->route('market.index')->with('status', 'successfully purchased');
     }
@@ -64,29 +69,35 @@ class MarketRacerController extends Controller
     {
         $user = Auth::user();
         $userWallets = $user->wallets;
+        $racerId = $request->route('racer_id');
 
         $walletService = new WalletService;
         $balance = $walletService->getBalance($userWallets);
 
         $walletUSD = $userWallets->firstWhere('currency_type', CurrencyType::USD->value);
 
-        $racer = Racer::where('id', $request->racer_id);
+        $racer = Racer::where('id', $racerId);
 
-        DB::transaction(function () use ($balance, $racer, $walletUSD, $user) {
+        try {
+            DB::transaction(function () use ($balance, $racer, $walletUSD, $user) {
 
-            if(!empty($racer->value('user_id'))) {
-                $walletUSD->transactions()->create([
-                    'value' => $racer->value('price')
-                ]);
+                if($racer->value('user_id') === $user->id) {
+                    $walletUSD->transactions()->create([
+                        'value' => $racer->value('price')
+                    ]);
 
-                $racer->update([
-                    'user_id' => null
-                ]);
-            } else {
-                //throw new \Exception('Гонщик не приобритен');
-                return redirect()->route('market.index')->with('status', 'unsuccessfully sold');
-            }
-        });
+                    $racer->update([
+                        'user_id' => null
+                    ]);
+                } else {
+                    throw new \Exception('Гонщик не приобритен');
+
+                }
+            });
+        } catch (\Exception $exeption) {
+            return redirect()->route('market.index')->with('status', 'unsuccessfully sold');
+        }
+
 
         return redirect()->route('market.index')->with('status', 'successfully sold');
     }
