@@ -4,6 +4,7 @@ namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
 use App\Models\Racer;
+use App\Enums\CurrencyType;
 use App\Observers\UserObserver;
 use Laravel\Sanctum\HasApiTokens;
 use Laravel\Jetstream\HasProfilePhoto;
@@ -57,6 +58,13 @@ class User extends Authenticatable
     public function wallets(): HasMany
     {
         return $this->hasMany(Wallet::class);
+    }
+
+    public function neededWallet(CurrencyType $currency): Wallet
+    {
+        $neededWallet = $this->wallets()->firstWhere('currency_type', $currency->value);
+
+        return $neededWallet;
     }
 
     public function racers(): HasMany

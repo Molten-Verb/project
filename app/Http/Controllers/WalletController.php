@@ -31,7 +31,7 @@ class WalletController extends Controller
         $existsWallets = $walletExistsChecker->getExistsCurrencises($userWallets);
 
         $walletService = new WalletService;
-        $balance = $walletService->getBalance($userWallets);
+        $balance = $walletService->getBalanceOfAllWallets($userWallets);
 
         return view('wallet.index', compact('id', 'balance', 'missingWallets', 'existsWallets'));
     }

@@ -5,6 +5,8 @@
         </h2>
     </x-slot>
 
+    <link rel='stylesheet' href='https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css'>
+
     <div class="py-3">
         <div
             class="max-w-6xl mx-auto sm:px-6 lg:px-8 bg-white overflow-hidden shadow-sm sm:rounded-lg p-6 flex justify-between">
@@ -30,30 +32,6 @@
                         {{ __('Пилот не приобретен.') }}</p>
                 @endif
             </div>
-
-            <div class="mr-4 flex justify-end">
-                <form method="GET" action="{{ route('market.index') }}">
-                    <select name="sort_column1" class="mr-2 rounded-lg py-2 px-7">
-                        <option value="id">нет</option>
-                        <option value="name">по имени</option>
-                        <option value="price">по цене</option>
-                    </select>
-                    <select name="sort_direction1" class="mr-2 rounded-lg py-2 px-7">
-                        <option value="asc">по возрастанию</option>
-                        <option value="desc">по убыванию</option>
-                    </select>
-                    <select name="sort_column2" class="mr-2 rounded-lg py-2 px-7">
-                        <option value="id">нет</option>
-                        <option value="price">по цене</option>
-                    </select>
-                    <select name="sort_direction2" class="mr-2 rounded-lg py-2 px-7">
-                        <option value="asc">по возрастанию</option>
-                        <option value="desc">по убыванию</option>
-                    </select>
-                    <button type="submit"
-                        class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">Сортировать</button>
-                </form>
-            </div>
         </div>
     </div>
 
@@ -61,13 +39,39 @@
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8 flex justify-center">
             <div class="bg-white shadow-sm sm:rounded-lg p-6 flex justify-center">
                 <table class="min-w-full text-center text-sm font-light text-surface dark:text-white">
-                    <thead class="border-b bg-black font-medium text-white rounded-t-lg">
+                    <thead class="border-b bg-green text-black text-base rounded-t-lg">
                         <tr>
-                            <th scope="col" class="px-6 py-4">Гонщик</th>
-                            <th scope="col" class="px-6 py-4">Национальность</th>
-                            <th scope="col" class="px-6 py-4">Рыночная цена USD</th>
-                            <th scope="col" class="px-6 py-4">Владелец</th>
-                            <th scope="col" class="px-6 py-4">Купить/продать</th>
+                            <th scope="col" class="px-6 py-4 flex items-center justify-between">
+                                <div class="text-center">Гонщик</div>
+                                <div class="flex flex-col">
+                                    <a href="?sort=name&order=asc" class="fa fa-sort-up"></a>
+                                    <a href="?sort=name&order=desc" class="fa fa-sort-down"></a>
+                                </div>
+                            </th>
+                            <th scope="col" class="px-6 py-4 justify-between">
+                                <div class="text-center">Страна</div>
+                                <div class="flex flex-col">
+                                    <a href="?sort=country&order=asc" class="fa fa-sort-up"></a>
+                                    <a href="?sort=country&order=desc" class="fa fa-sort-down"></a>
+                                </div>
+                            </th>
+                            <th scope="col" class="px-6 py-4 flex items-center justify-between">
+                                <div class="text-center">Рыночная цена USD</div>
+                                <div class="flex flex-col">
+                                    <a href="?sort=price&order=asc" class="fa fa-sort-up"></a>
+                                    <a href="?sort=price&order=desc" class="fa fa-sort-down"></a>
+                                </div>
+                            </th>
+                            <th scope="col" class="px-6 py-4">
+                                <div class="flex flex-col">
+                                    Владелец
+                                </div>
+                            </th>
+                            <th scope="col" class="px-6 py-4">
+                                <div class="flex flex-col">
+                                    Купить/продать
+                                </div>
+                            </th>
                         </tr>
                     </thead>
                     <tbody>
