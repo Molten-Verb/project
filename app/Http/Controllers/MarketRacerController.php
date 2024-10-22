@@ -8,6 +8,7 @@ use Illuminate\View\View;
 use App\Enums\CurrencyType;
 use Illuminate\Http\Request;
 
+use App\Rules\SufficientBalance;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\RedirectResponse;
@@ -23,17 +24,21 @@ class MarketRacerController extends Controller
         $racersList = Racer::orderBy($sortColumn, $sortDirection)->get();
 
         $user = Auth::user();
-        $walletUSD = $user->neededWallet(CurrencyType::USD);
+        $balanceUSD = null;
 
-        $walletService = new WalletService;
-        $balanceUSD = $walletService->getWalletBalance($walletUSD);
+        if ($user) {
+            $walletUSD = $user->neededWallet(CurrencyType::USD);
+
+            $walletService = new WalletService;
+            $balanceUSD = $walletService->getWalletBalance($walletUSD);
+        }
 
         $allUsers = User::get();
 
         return view('market', compact('racersList', 'allUsers', 'balanceUSD'));
     }
 
-    public function buy(Racer $racer, RacerBuyRequest $request): RedirectResponse
+    public function buy(Racer $racer, Request $request): RedirectResponse
     {
         $user = Auth::user();
         $walletUSD = $user->neededWallet(CurrencyType::USD);
@@ -41,29 +46,27 @@ class MarketRacerController extends Controller
         $walletService = new WalletService;
         $balanceUSD = $walletService->getWalletBalance($walletUSD);
 
-        if ($balanceUSD < $racer->value('price')) {
-            $statusMessage = 'unsuccessfully purchased';
-        } else {
+        $validated = $request->validate([
+            'balanceUSD' => ['required', new SufficientBalance($balanceUSD, $racer->price)]
+        ]);
 
-            try {
-                DB::beginTransaction();
+        try {
+            DB::beginTransaction();
 
-                    $walletUSD->transactions()->create([
-                        'value' => -$racer->value('price')
-                    ]);
+                $walletUSD->transactions()->create([
+                    'value' => -$racer->value('price')
+                ]);
 
-                    $racer->update([
-                        'user_id' => $user->id
-                    ]);
+                $racer->update([
+                    'user_id' => $user->id
+                ]);
 
-                DB::commit();
-            } catch (\Exception $exeption) {
-                DB::rollback();
-            }
-            $statusMessage = 'successfully purchased';
+            DB::commit();
+        } catch (\Exception $exeption) {
+            DB::rollback();
         }
 
-        return redirect()->route('market.index')->with('status', $statusMessage);
+        return redirect()->route('market.index')->with('status', 'successfully purchased');
     }
 
     public function sell(Racer $racer, Request $request): RedirectResponse
@@ -89,11 +92,11 @@ class MarketRacerController extends Controller
                     ]);
 
                     DB::commit();
-                } catch (\Exception $exeption) {
-                    DB::rollback();
-                }
-                $statusMessage = 'successfully sold';
+            } catch (\Exception $exeption) {
+                DB::rollback();
             }
+                $statusMessage = 'successfully sold';
+        }
 
         return redirect()->route('market.index')->with('status', $statusMessage);
     }

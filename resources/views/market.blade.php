@@ -43,7 +43,7 @@
                 @endif
             </div>
             <div class="flex justify-center text-base">
-                Ваш баланс: {{ $balanceUSD }}
+                Ваш баланс: {{ $balanceUSD ?? 'Авторизуйтесь для отображения баланса' }}
             </div>
         </div>
     </div>
@@ -106,6 +106,8 @@
                                             {{ html()->form('POST', route('market.buy', $racer->id))->open() }}
                                             @csrf
                                             @method('post')
+
+                                            {{ html()->hidden($name = 'balanceUSD', $value = $balanceUSD) }}
 
                                             <button
                                                 class="bg-green-500 shadow-green-500 shadow-lg shadow-green-500/50
