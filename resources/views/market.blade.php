@@ -8,29 +8,42 @@
     <link rel='stylesheet' href='https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css'>
 
     <div class="py-3">
-        <div
-            class="max-w-6xl mx-auto sm:px-6 lg:px-8 bg-white overflow-hidden shadow-sm sm:rounded-lg p-6 flex justify-between">
+        <div class="max-w-6xl mx-auto sm:px-6 lg:px-8 bg-white overflow-hidden shadow-sm sm:rounded-lg p-6">
             <div class="flex justify-start">
+                @if ($errors->any())
+                        <ul class="alert alert-danger">
+                            @foreach ($errors->all() as $error)
+                                <li>{{ $error }}</li>
+                            @endforeach
+                        </ul>
+                @endif
+
                 @if (session('status') === 'successfully purchased')
                     <p x-data="{ show: true }" x-show="show" x-transition x-init="setTimeout(() => show = false, 5000)"
                         class="font-bold text-green-600">
                         {{ __('Вы приобрели пилота.') }}</p>
                 @endif
+
                 @if (session('status') === 'unsuccessfully purchased')
                     <p x-data="{ show: true }" x-show="show" x-transition x-init="setTimeout(() => show = false, 5000)"
                         class="font-bold text-red-600">
                         {{ __('Недостаточно средств.') }}</p>
                 @endif
+
                 @if (session('status') === 'successfully sold')
                     <p x-data="{ show: true }" x-show="show" x-transition x-init="setTimeout(() => show = false, 5000)"
                         class="font-bold text-green-600">
                         {{ __('Пилот успешно продан.') }}</p>
                 @endif
+
                 @if (session('status') === 'unsuccessfully sold')
                     <p x-data="{ show: true }" x-show="show" x-transition x-init="setTimeout(() => show = false, 5000)"
                         class="font-bold text-red-600">
                         {{ __('Пилот не приобретен.') }}</p>
                 @endif
+            </div>
+            <div class="flex justify-center text-base">
+                Ваш баланс: {{ $balanceUSD }}
             </div>
         </div>
     </div>

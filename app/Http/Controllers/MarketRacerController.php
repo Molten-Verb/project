@@ -10,6 +10,7 @@ use Illuminate\Http\Request;
 
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Http\RedirectResponse;
 use App\Http\Requests\RacerBuyRequest;
 use App\Http\Services\Wallet\WalletService;
 
@@ -21,12 +22,18 @@ class MarketRacerController extends Controller
         $sortDirection = $request->query('order')?? 'asc';
         $racersList = Racer::orderBy($sortColumn, $sortDirection)->get();
 
+        $user = Auth::user();
+        $walletUSD = $user->neededWallet(CurrencyType::USD);
+
+        $walletService = new WalletService;
+        $balanceUSD = $walletService->getWalletBalance($walletUSD);
+
         $allUsers = User::get();
 
-        return view('market', compact('racersList', 'allUsers'));
+        return view('market', compact('racersList', 'allUsers', 'balanceUSD'));
     }
 
-    public function buy(Racer $racer, RacerBuyRequest $request)
+    public function buy(Racer $racer, RacerBuyRequest $request): RedirectResponse
     {
         $user = Auth::user();
         $walletUSD = $user->neededWallet(CurrencyType::USD);
@@ -34,33 +41,32 @@ class MarketRacerController extends Controller
         $walletService = new WalletService;
         $balanceUSD = $walletService->getWalletBalance($walletUSD);
 
-        $validated = $request->validated([$balanceUSD]);
-        dd($validated);
+        if ($balanceUSD < $racer->value('price')) {
+            $statusMessage = 'unsuccessfully purchased';
+        } else {
 
-        if ($request->validated())
-        try {
-            DB::beginTransaction();
+            try {
+                DB::beginTransaction();
 
                     $walletUSD->transactions()->create([
-                        'value' => -$racer->value('price') //убрать, сразу проверить баланс в валидации
+                        'value' => -$racer->value('price')
                     ]);
 
-                    $racer->update([ // метод atach модели
+                    $racer->update([
                         'user_id' => $user->id
                     ]);
 
-                    //throw new \Exception('Недостаточно средств'); //написать rule в реквесте что недостаочно средств
-
-            DB::commit();
-        } catch (\Exception $exeption) {
-            DB::rollback();
-            return redirect()->route('market.index')->with('status', 'unsuccessfully purchased'); //вместмо сообщения перменная с текстом
+                DB::commit();
+            } catch (\Exception $exeption) {
+                DB::rollback();
+            }
+            $statusMessage = 'successfully purchased';
         }
 
-        return redirect()->route('market.index')->with('status', 'successfully purchased');
+        return redirect()->route('market.index')->with('status', $statusMessage);
     }
 
-    public function sell(Request $request)
+    public function sell(Racer $racer, Request $request): RedirectResponse
     {
         $user = Auth::user();
         $walletUSD = $user->neededWallet(CurrencyType::USD);
@@ -68,10 +74,12 @@ class MarketRacerController extends Controller
         $walletService = new WalletService;
         $balanceUSD = $walletService->getWalletBalance($walletUSD);
 
-        try {
-            DB::transaction(function () use ($racer, $walletUSD, $user) {
+        if ($racer->user_id !== $user->id) {
+            $statusMessage = 'unsuccessfully sold';
+        } else {
+            try {
+                DB::beginTransaction();
 
-                if($racer->value('user_id') === $user->id) {
                     $walletUSD->transactions()->create([
                         'value' => $racer->value('price')
                     ]);
@@ -79,15 +87,14 @@ class MarketRacerController extends Controller
                     $racer->update([
                         'user_id' => null
                     ]);
-                } else {
-                    throw new \Exception('Гонщик не приобритен');
+
+                    DB::commit();
+                } catch (\Exception $exeption) {
+                    DB::rollback();
                 }
-            });
-        } catch (\Exception $exeption) {
+                $statusMessage = 'successfully sold';
+            }
 
-            return redirect()->route('market.index')->with('status', 'unsuccessfully sold');
-        }
-
-        return redirect()->route('market.index')->with('status', 'successfully sold');
+        return redirect()->route('market.index')->with('status', $statusMessage);
     }
 }

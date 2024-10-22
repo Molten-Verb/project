@@ -16,7 +16,7 @@ class RacerBuyRequest extends FormRequest
      *
      * @return array<string, \Illuminate\Contracts\Validation\ValidationRule|array<mixed>|string>
      */
-    public function rules(): array
+    public function rules()
     {
         $user = Auth::user();
         $walletUSD = $user->neededWallet(CurrencyType::USD);
@@ -27,13 +27,8 @@ class RacerBuyRequest extends FormRequest
         $racer = $this->racer;
 
         return [
-            'balanceUSD' =>[
-                'required',
-                function (string $attribute, mixed $value, Closure $fail) use ($balanceUSD, $racer) {
-                    if ($balanceUSD < $racer->value('price')) {
-                        $fail("Недостаточно средств");
-                    }
-                }
+            'racer' => [
+                'exists:racers, id'
             ]
         ];
     }

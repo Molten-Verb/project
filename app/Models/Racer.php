@@ -21,7 +21,7 @@ class Racer extends Model
         'name',
         'country',
         'price',
-        'holder',
+        'user_id',
         'avatar',
     ];
 
