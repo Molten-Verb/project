@@ -67,6 +67,15 @@ class User extends Authenticatable
         return $neededWallet;
     }
 
+    public function getUserWalletBalance(CurrencyType $currency): float
+    {
+        $neededWallet = $this->wallets()->firstWhere('currency_type', $currency->value);
+        $walletId = $neededWallet->id ?? null;
+        $amount = $walletId ? Transaction::where('wallet_id', $walletId)->sum('value') : 0;
+
+        return $amount;
+    }
+
     public function racers(): HasMany
     {
         return $this->hasMany(Racer::class);

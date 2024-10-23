@@ -8,7 +8,6 @@ use Illuminate\View\View;
 use App\Enums\CurrencyType;
 use Illuminate\Http\Request;
 
-use App\Rules\SufficientBalance;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\RedirectResponse;
@@ -27,10 +26,7 @@ class MarketRacerController extends Controller
         $balanceUSD = null;
 
         if ($user) {
-            $walletUSD = $user->neededWallet(CurrencyType::USD);
-
-            $walletService = new WalletService;
-            $balanceUSD = $walletService->getWalletBalance($walletUSD);
+            $balanceUSD = $user->getUserWalletBalance(CurrencyType::USD);
         }
 
         $allUsers = User::get();
@@ -38,23 +34,16 @@ class MarketRacerController extends Controller
         return view('market', compact('racersList', 'allUsers', 'balanceUSD'));
     }
 
-    public function buy(Racer $racer, Request $request): RedirectResponse
+    public function buy(Racer $racer, RacerBuyRequest $request): RedirectResponse
     {
         $user = Auth::user();
         $walletUSD = $user->neededWallet(CurrencyType::USD);
-
-        $walletService = new WalletService;
-        $balanceUSD = $walletService->getWalletBalance($walletUSD);
-
-        $validated = $request->validate([
-            'balanceUSD' => ['required', new SufficientBalance($balanceUSD, $racer->price)]
-        ]);
 
         try {
             DB::beginTransaction();
 
                 $walletUSD->transactions()->create([
-                    'value' => -$racer->value('price')
+                    'value' => -$racer->price
                 ]);
 
                 $racer->update([
@@ -69,13 +58,10 @@ class MarketRacerController extends Controller
         return redirect()->route('market.index')->with('status', 'successfully purchased');
     }
 
-    public function sell(Racer $racer, Request $request): RedirectResponse
+    public function sell(Racer $racer, CannotBuyOwnedRacerRequest $request): RedirectResponse
     {
         $user = Auth::user();
         $walletUSD = $user->neededWallet(CurrencyType::USD);
-
-        $walletService = new WalletService;
-        $balanceUSD = $walletService->getWalletBalance($walletUSD);
 
         if ($racer->user_id !== $user->id) {
             $statusMessage = 'unsuccessfully sold';
@@ -84,7 +70,7 @@ class MarketRacerController extends Controller
                 DB::beginTransaction();
 
                     $walletUSD->transactions()->create([
-                        'value' => $racer->value('price')
+                        'value' => $racer->price
                     ]);
 
                     $racer->update([

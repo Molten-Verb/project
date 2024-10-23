@@ -103,7 +103,7 @@
                                 <th class="whitespace-nowrap  px-6 py-4 font-medium">
                                     <div class="flex space-x-2">
                                         <div>
-                                            {{ html()->form('POST', route('market.buy', $racer->id))->open() }}
+                                            {{ html()->form('POST', route('market.buy', $racer))->open() }}
                                             @csrf
                                             @method('post')
 

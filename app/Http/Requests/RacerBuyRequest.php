@@ -5,8 +5,8 @@ namespace App\Http\Requests;
 use App\Models\Racer;
 use App\Enums\CurrencyType;
 use Illuminate\Validation\Rule;
+use App\Rules\SufficientBalance;
 use Illuminate\Support\Facades\Auth;
-use App\Http\Services\Wallet\WalletService;
 use Illuminate\Foundation\Http\FormRequest;
 
 class RacerBuyRequest extends FormRequest
@@ -18,18 +18,11 @@ class RacerBuyRequest extends FormRequest
      */
     public function rules()
     {
-        $user = Auth::user();
-        $walletUSD = $user->neededWallet(CurrencyType::USD);
-
-        $walletService = new WalletService;
-        $balanceUSD = $walletService->getWalletBalance($walletUSD);
-
+        $balanceUSD = (float) $this->balanceUSD;
         $racer = $this->racer;
 
         return [
-            'racer' => [
-                'exists:racers, id'
-            ]
+            'balanceUSD' => ['required', new SufficientBalance($balanceUSD, $racer->price)]
         ];
     }
 }
