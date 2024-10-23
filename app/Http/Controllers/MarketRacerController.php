@@ -58,7 +58,7 @@ class MarketRacerController extends Controller
         return redirect()->route('market.index')->with('status', 'successfully purchased');
     }
 
-    public function sell(Racer $racer, CannotBuyOwnedRacerRequest $request): RedirectResponse
+    public function sell(Racer $racer, Request $request): RedirectResponse
     {
         $user = Auth::user();
         $walletUSD = $user->neededWallet(CurrencyType::USD);

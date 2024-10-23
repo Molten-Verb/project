@@ -14,15 +14,13 @@ class RacerBuyRequest extends FormRequest
     /**
      * Get the validation rules that apply to the request.
      *
+     * @property Racer $racer;
      * @return array<string, \Illuminate\Contracts\Validation\ValidationRule|array<mixed>|string>
      */
     public function rules()
     {
-        $balanceUSD = (float) $this->balanceUSD;
-        $racer = $this->racer;
-
         return [
-            'balanceUSD' => ['required', new SufficientBalance($balanceUSD, $racer->price)]
+            'balanceUSD' => ['required', new SufficientBalance($this->balanceUSD, $this->racer->price)]
         ];
     }
 }
