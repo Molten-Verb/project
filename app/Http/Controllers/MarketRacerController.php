@@ -26,7 +26,7 @@ class MarketRacerController extends Controller
         $balanceUSD = null;
 
         if ($user) {
-            $balanceUSD = $user->getUserWalletBalance(CurrencyType::USD);
+            $balanceUSD = $user->balanceUSD();
         }
 
         $allUsers = User::get();

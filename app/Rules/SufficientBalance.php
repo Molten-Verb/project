@@ -10,9 +10,9 @@ class SufficientBalance implements ValidationRule
     protected $balance;
     protected $price;
 
-    public function __construct($balance, $price)
+    public function __construct($user, $price)
     {
-        $this->balance = $balance;
+        $this->balance = $user->balanceUSD();
         $this->price = $price;
     }
     /**
@@ -23,7 +23,7 @@ class SufficientBalance implements ValidationRule
     public function validate(string $attribute, mixed $value, Closure $fail): void
     {
         if ($this->balance < $this->price) {
-            $fail("Недостаточно средств");
+            $fail("Недостаточно средств USD");
         }
     }
 }

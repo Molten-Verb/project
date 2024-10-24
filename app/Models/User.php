@@ -60,21 +60,30 @@ class User extends Authenticatable
         return $this->hasMany(Wallet::class);
     }
 
-    public function neededWallet(CurrencyType $currency): Wallet
-    {
-        $neededWallet = $this->wallets()->firstWhere('currency_type', $currency->value);
+        public function neededWallet(CurrencyType $currency): Wallet
+        {
+            $neededWallet = $this->wallets()->firstWhere('currency_type', $currency->value);
 
-        return $neededWallet;
-    }
+            return $neededWallet;
+        }
 
-    public function getUserWalletBalance(CurrencyType $currency): float
-    {
-        $neededWallet = $this->wallets()->firstWhere('currency_type', $currency->value);
-        $walletId = $neededWallet->id ?? null;
-        $amount = $walletId ? Transaction::where('wallet_id', $walletId)->sum('value') : 0;
+        public function getUserWalletBalance(CurrencyType $currency): float
+        {
+            $neededWallet = $this->wallets()->firstWhere('currency_type', $currency->value);
+            $walletId = $neededWallet->id ?? null;
+            $amount = $walletId ? Transaction::where('wallet_id', $walletId)->sum('value') : 0;
 
-        return $amount;
-    }
+            return $amount;
+        }
+
+        public function balanceUSD(): float
+        {
+            $neededWallet = $this->wallets()->firstWhere('currency_type', CurrencyType::USD->value);
+            $walletId = $neededWallet->id ?? null;
+            $amount = $walletId ? Transaction::where('wallet_id', $walletId)->sum('value') : 0;
+
+            return $amount;
+        }
 
     public function racers(): HasMany
     {
