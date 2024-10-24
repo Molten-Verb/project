@@ -11,13 +11,16 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('transactions', function (Blueprint $table) {
+        Schema::create('racers', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('wallet_id')->nullable();
-            $table->decimal('value', 15, 2);
+            $table->string('name');
+            $table->string('country');
+            $table->unsignedBigInteger('price')->nullable();
+            $table->unsignedBigInteger('user_id')->nullable();
+            $table->string('avatar')->nullable();
             $table->timestamps();
 
-            $table->foreign('wallet_id')->references('id')->on('wallets');
+            $table->foreign('user_id')->references('id')->on('users');
         });
     }
 
@@ -26,6 +29,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('transactions');
+        Schema::dropIfExists('racers');
     }
 };
