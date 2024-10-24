@@ -2,63 +2,43 @@
 
 namespace App\Http\Controllers;
 
+use Illuminate\View\View;
+use App\Enums\CurrencyType;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class OwnRacersController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
-    public function index()
+    public function index(): View
     {
-        //
+        $user = Auth::user();
+        $racers = $user->racers()->get();
+
+        return view('OwnRacers', compact('racers'));
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
-    {
-        //
-    }
 
-    /**
-     * Store a newly created resource in storage.
-     */
-    public function store(Request $request)
+    public function sell(Racer $racer, Request $request): RedirectResponse
     {
-        //
-    }
+        $user = Auth::user();
+        $walletUSD = $user->neededWallet(CurrencyType::USD);
 
-    /**
-     * Display the specified resource.
-     */
-    public function show(string $id)
-    {
-        //
-    }
+        try {
+            DB::beginTransaction();
 
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(string $id)
-    {
-        //
-    }
+                $walletUSD->transactions()->create([
+                    'value' => -$racer->price
+                ]);
 
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, string $id)
-    {
-        //
-    }
+                $racer->update([
+                    'user_id' => $user->id
+                ]);
 
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(string $id)
-    {
-        //
+            DB::commit();
+        } catch (\Exception $exeption) {
+            DB::rollback();
+        }
+
+        return redirect()->route('market.index')->with('status', 'successfully purchased');
     }
 }

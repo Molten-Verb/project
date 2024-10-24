@@ -14,14 +14,17 @@
 
                 <!-- Navigation Links -->
                 <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
-                    <x-nav-link :href="url('/')" :active="request()->routeIs('dashboard')">
+                    <x-nav-link :href="url('/')" :active="request()->routeIs('/')">
                         {{ __('Домой') }}
                     </x-nav-link>
                     <x-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')">
                         {{ __('Дэшборд') }}
                     </x-nav-link>
-                    <x-nav-link :href="route('wallet.index', ['id => $id'])" :active="request()->routeIs('dashboard')">
+                    <x-nav-link :href="route('wallet.index', ['id => $id'])" :active="request()->routeIs('wallet.index')">
                         {{ __('Кошелёк') }}
+                    </x-nav-link>
+                    <x-nav-link :href="route('OwnRacers.index')" :active="request()->routeIs('OwnRacers.index')">
+                        {{ __('Мои пилоты') }}
                     </x-nav-link>
                 </div>
             </div>
