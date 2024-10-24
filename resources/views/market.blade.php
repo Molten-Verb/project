@@ -100,7 +100,7 @@
                                 <td class="whitespace-nowrap  px-6 py-4 font-medium">
                                     {{ $allUsers->where('id', $racer->user_id)->value('name') ?? 'в поиске контракта' }}
                                 </td>
-                                <th class="whitespace-nowrap  px-6 py-4 font-medium">
+                                <th class="whitespace-nowrap px-6 py-4 font-medium">
                                     <div class="flex space-x-2">
                                         <div>
                                             {{ html()->form('POST', route('market.buy', $racer))->open() }}

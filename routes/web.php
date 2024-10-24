@@ -7,6 +7,7 @@ use App\Http\Controllers\SocialController;
 use App\Http\Controllers\WalletController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\CurrencyController;
+use App\Http\Controllers\OwnRacersController;
 use App\Http\Controllers\MarketRacerController;
 
 /*
@@ -70,6 +71,14 @@ Route::prefix('market')
     ->controller(MarketRacerController::class)
     ->group(function () {
         Route::get('/', 'index')->name('index');
-        Route::post('/buy/{racer}', 'buy')->name('buy');
+        Route::middleware('auth')->post('/buy/{racer}', 'buy')->name('buy');
+        Route::post('/sell/{racer}', 'sell')->name('sell');
+});
+
+Route::middleware('auth')->prefix('OwnRacers')
+    ->name('OwnRacers.')
+    ->controller(OwnRacersController::class)
+    ->group(function () {
+        Route::get('/', 'index')->name('index');
         Route::post('/sell/{racer}', 'sell')->name('sell');
 });
