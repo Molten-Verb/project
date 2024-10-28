@@ -47,7 +47,7 @@
                                 <button
                                     class="bg-red-500 shadow-red-500 shadow-lg shadow-red-500/50
                                                 hover:bg-red-700 text-white text-sm font-bold py-2 px-4 rounded ml-2 mt-2">
-                                    Продать за 50% от стоимости
+                                    Продать за {{ config('racers.discount') }}% от стоимости
                                 </button>
                                 {{ html()->form()->close() }}
 

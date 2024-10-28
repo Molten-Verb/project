@@ -22,11 +22,12 @@ class OwnRacersController extends Controller
     public function sellHalfPrice(Racer $racer, Request $request): RedirectResponse
     {
         $wallet = Auth::user()->neededWallet(CurrencyType::USD);
+        $discount = config('racers.discount') / 100;
 
-        DB::transaction(function () use ($wallet, $racer) {
+        DB::transaction(function () use ($wallet, $racer, $discount) {
             $wallet
                 ->transactions()
-                ->create(['value' => ($racer->price / 2)]); // скидка будет меняться, будет брать из config
+                ->create(['value' => ($racer->price * $discount)]);
 
             $racer->update([
                 'user_id' => null,

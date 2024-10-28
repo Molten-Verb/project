@@ -66,7 +66,7 @@ Route::middleware('auth')->prefix('wallet/{id}')
         Route::post('/', 'store')->name('store');
 });
 
-Route::prefix('racers')
+Route::prefix('market')
     ->name('market.')
     ->controller(MarketRacerController::class)
     ->group(function () {
