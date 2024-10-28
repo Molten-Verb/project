@@ -22,6 +22,7 @@ class Racer extends Model
         'country',
         'price',
         'user_id',
+        'on_market',
         'avatar',
     ];
 

@@ -23,7 +23,7 @@
                     <x-nav-link :href="route('wallet.index', ['id => $id'])" :active="request()->routeIs('wallet.index')">
                         {{ __('Кошелёк') }}
                     </x-nav-link>
-                    <x-nav-link :href="route('OwnRacers.index')" :active="request()->routeIs('OwnRacers.index')">
+                    <x-nav-link :href="route('ownRacers.index')" :active="request()->routeIs('ownRacers.index')">
                         {{ __('Мои пилоты') }}
                     </x-nav-link>
                 </div>
@@ -63,6 +63,9 @@
                         </x-slot>
 
                         <x-slot name="content">
+                            <x-dropdown-link :href="route('wallet.index', Auth::user()->id)">
+                                Баланс USD:{{ number_format(Auth::user()->balanceUSD(), 0, ',', ' ') }}
+                            </x-dropdown-link>
                             <x-dropdown-link :href="route('profile.edit')">
                                 {{ __('Профиль') }}
                             </x-dropdown-link>

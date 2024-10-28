@@ -17,6 +17,7 @@ return new class extends Migration
             $table->string('country');
             $table->unsignedBigInteger('price')->nullable();
             $table->unsignedBigInteger('user_id')->nullable();
+            $table->boolean('on_market')->default(false);
             $table->string('avatar')->nullable();
             $table->timestamps();
 

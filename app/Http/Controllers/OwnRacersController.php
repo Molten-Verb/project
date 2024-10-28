@@ -2,43 +2,55 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\View\View;
 use App\Enums\CurrencyType;
+use App\Models\Racer;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
+use Illuminate\View\View;
 
 class OwnRacersController extends Controller
 {
     public function index(): View
     {
-        $user = Auth::user();
-        $racers = $user->racers()->get();
+        $racers = Auth::user()->racers()->get();
 
-        return view('OwnRacers', compact('racers'));
+        return view('ownRacers', compact('racers'));
     }
 
-
-    public function sell(Racer $racer, Request $request): RedirectResponse
+    public function sellHalfPrice(Racer $racer, Request $request): RedirectResponse
     {
-        $user = Auth::user();
-        $walletUSD = $user->neededWallet(CurrencyType::USD);
+        $wallet = Auth::user()->neededWallet(CurrencyType::USD);
 
-        try {
-            DB::beginTransaction();
+        DB::transaction(function () use ($wallet, $racer) {
+            $wallet
+                ->transactions()
+                ->create(['value' => ($racer->price / 2)]); // скидка будет меняться, будет брать из config
 
-                $walletUSD->transactions()->create([
-                    'value' => -$racer->price
-                ]);
+            $racer->update([
+                'user_id' => null,
+                'on_market' => true,
+            ]);
+        });
 
-                $racer->update([
-                    'user_id' => $user->id
-                ]);
+        return redirect()
+            ->route('ownRacers.index')
+            ->with('status', 'Successfully sold');
+    }
 
-            DB::commit();
-        } catch (\Exception $exeption) {
-            DB::rollback();
+    public function update(Racer $racer, Request $request): RedirectResponse // В реквесте валидируем цену
+    {
+        $onMarket = false;
+        $statusMessage = 'racer not sale';
+
+        if (!$racer->on_market) {
+            $onMarket = true;
+            $statusMessage = 'racer sale';
         }
 
-        return redirect()->route('market.index')->with('status', 'successfully purchased');
+        $racer->update(['on_market' => $onMarket]); // ПОЗЖЕ добавить возможность задать цену
+
+        return redirect()->route('ownRacers.index')->with('status', 'ok');
     }
 }

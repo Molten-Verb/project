@@ -8,12 +8,10 @@ use Illuminate\Contracts\Validation\ValidationRule;
 class SufficientBalance implements ValidationRule
 {
     protected $balance;
-    protected $price;
 
-    public function __construct($user, $price)
+    public function __construct($user)
     {
         $this->balance = $user->balanceUSD();
-        $this->price = $price;
     }
     /**
      * Run the validation rule.
@@ -22,7 +20,7 @@ class SufficientBalance implements ValidationRule
      */
     public function validate(string $attribute, mixed $value, Closure $fail): void
     {
-        if ($this->balance < $this->price) {
+        if ($this->balance < $value) {
             $fail("Недостаточно средств USD");
         }
     }

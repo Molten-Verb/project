@@ -2,87 +2,45 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\User;
-use App\Models\Racer;
-use Illuminate\View\View;
 use App\Enums\CurrencyType;
+use App\Http\Requests\EnoughBalanceRequest;
+use App\Models\Racer;
+use App\Models\User;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
-
-use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
-use App\Http\Requests\RacerBuyRequest;
-use App\Http\Services\Wallet\WalletService;
+use Illuminate\Support\Facades\DB;
+use Illuminate\View\View;
+use Spatie\QueryBuilder\QueryBuilder;
 
 class MarketRacerController extends Controller
 {
     public function index(Request $request): View
     {
-        $sortColumn = $request->query('sort') ?? 'id';
-        $sortDirection = $request->query('order')?? 'asc';
-        $racersList = Racer::orderBy($sortColumn, $sortDirection)->get();
+        $racers = QueryBuilder::for(Racer::class)
+            ->where('on_market', true)
+            ->defaultSort('id')
+            ->allowedSorts('id', 'name', 'country', 'price')
+            ->get();
 
-        $user = Auth::user();
-        $balanceUSD = null;
-
-        if ($user) {
-            $balanceUSD = $user->balanceUSD();
-        }
-
-        $allUsers = User::get();
-
-        return view('market', compact('racersList', 'allUsers', 'balanceUSD'));
+        return view('market', compact('racers'));
     }
 
-    public function buy(Racer $racer, RacerBuyRequest $request): RedirectResponse
+    public function buy(Racer $racer, EnoughBalanceRequest $request): RedirectResponse
     {
-        $user = Auth::user();
-        $walletUSD = $user->neededWallet(CurrencyType::USD);
+        $wallet = Auth::user()->neededWallet(CurrencyType::USD);
 
-        try {
-            DB::beginTransaction();
+        DB::transaction(function () use ($wallet, $racer) {
+            $wallet
+                ->transactions()
+                ->create(['value' => -$racer->price]);
 
-                $walletUSD->transactions()->create([
-                    'value' => -$racer->price
-                ]);
+            $racer->update([
+                'user_id' => Auth::user()->id,
+                'on_market' => false,
+            ]);
+        });
 
-                $racer->update([
-                    'user_id' => $user->id
-                ]);
-
-            DB::commit();
-        } catch (\Exception $exeption) {
-            DB::rollback();
-        }
-
-        return redirect()->route('market.index')->with('status', 'successfully purchased');
-    }
-
-    public function sell(Racer $racer, Request $request): RedirectResponse
-    {
-        $user = Auth::user();
-        $walletUSD = $user->neededWallet(CurrencyType::USD);
-
-        if ($racer->user_id !== $user->id) {
-            $statusMessage = 'unsuccessfully sold';
-        } else {
-            try {
-                DB::beginTransaction();
-
-                    $walletUSD->transactions()->create([
-                        'value' => $racer->price
-                    ]);
-
-                    $racer->update([
-                        'user_id' => null
-                    ]);
-
-                    DB::commit();
-            } catch (\Exception $exeption) {
-                DB::rollback();
-            }
-                $statusMessage = 'successfully sold';
-        }
-
-        return redirect()->route('market.index')->with('status', $statusMessage);
+        return redirect()->route('market.index')->with('message', 'Успешно');
     }
 }

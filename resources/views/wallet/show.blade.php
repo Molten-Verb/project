@@ -14,10 +14,10 @@
             </div>
             @else
                 <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg p-6 flex justify-center" style="max-width: 800px;">
-                    <table class="min-w-full table-auto">
+                    <table class="min-w-full table-auto text-center">
                         <thead>
                             <tr>
-                                <th class="px-4 py-2 border-b-2 border-gray-300">Поступления</th>
+                                <th class="px-4 py-2 border-b-2 border-gray-300">Пополнения/снятия</th>
                                 <th class="px-4 py-2 border-b-2 border-gray-300">Валюта</th>
                                 <th class="px-4 py-2 border-b-2 border-gray-300">Дата поступлений</th>
                             </tr>
@@ -26,7 +26,7 @@
                             @foreach ($userWallets as $wallet)
                                 @foreach ($wallet->transactions as $transaction)
                                 <tr>
-                                    <td class="px-4 py-2 border-b border-gray-300">{{ $transaction->value }}</td>
+                                    <td class="px-4 py-2 border-b border-gray-300">{{ number_format($transaction->value, 2, ',', ' ') }}</td>
                                     <td class="px-4 py-2 border-b border-gray-300">{{ $wallet->currency_type }}</td>
                                     <td class="px-4 py-2 border-b border-gray-300">{{ $transaction->created_at }}</td>
                                 </tr>

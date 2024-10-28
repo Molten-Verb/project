@@ -66,7 +66,7 @@ Route::middleware('auth')->prefix('wallet/{id}')
         Route::post('/', 'store')->name('store');
 });
 
-Route::prefix('market')
+Route::prefix('racers')
     ->name('market.')
     ->controller(MarketRacerController::class)
     ->group(function () {
@@ -75,10 +75,11 @@ Route::prefix('market')
         Route::post('/sell/{racer}', 'sell')->name('sell');
 });
 
-Route::middleware('auth')->prefix('OwnRacers')
-    ->name('OwnRacers.')
+Route::middleware('auth')->prefix('ownRacers')
+    ->name('ownRacers.')
     ->controller(OwnRacersController::class)
     ->group(function () {
         Route::get('/', 'index')->name('index');
-        Route::post('/sell/{racer}', 'sell')->name('sell');
+        Route::post('/sell/{racer}/half-price', 'sellHalfPrice')->name('sell.half-price');
+        Route::patch('/update/{racer}', 'update')->name('update');
 });
