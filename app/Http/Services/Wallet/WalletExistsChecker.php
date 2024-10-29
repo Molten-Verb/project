@@ -7,21 +7,39 @@ use Illuminate\Support\Collection;
 
 class WalletExistsChecker
 {
-    protected array $currencises = [];
+    protected array $missingCurrencises = [];
+    protected array $existsCurrencises = [];
 
     public function findMissingWallets(Collection $wallets): array
     {
         $existsWallets = $wallets->pluck('currency_type')->toArray();
+        $this->existsWallets = $existsWallets;
 
-        $currencies = [];
+        $missingCurrencises = [];
         foreach (CurrencyType::cases() as $case)
         {
             if (!in_array($case->name, $existsWallets))
             {
-                $currencies[$case->name] = $case->value;
+                $missingCurrencises[$case->name] = $case->value;
             }
         }
 
-        return $this->currencises = $currencies;
+        return $this->missingCurrencises = $missingCurrencises;
+    }
+
+    public function getExistsCurrencises(Collection $wallets): array
+    {
+        $existsWallets = $wallets->pluck('currency_type')->toArray();
+
+        $existsCurrencises = [];
+        foreach (CurrencyType::cases() as $case)
+        {
+            if (in_array($case->name, $existsWallets))
+            {
+                $existsCurrencises[$case->name] = $case->value;
+            }
+        }
+
+        return $this->existsCurrencises = $existsCurrencises;
     }
 }

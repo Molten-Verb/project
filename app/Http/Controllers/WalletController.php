@@ -27,12 +27,13 @@ class WalletController extends Controller
         $userWallets = $user->wallets;
 
         $walletExistsChecker = new WalletExistsChecker;
-        $existsWallets = $walletExistsChecker->findMissingWallets($userWallets);
+        $missingWallets = $walletExistsChecker->findMissingWallets($userWallets);
+        $existsWallets = $walletExistsChecker->getExistsCurrencises($userWallets);
 
         $walletService = new WalletService;
-        $balance = $walletService->getBalance($userWallets);
+        $balance = $walletService->getBalanceOfAllWallets($userWallets);
 
-        return view('wallet.index', compact('existsWallets', 'id', 'balance'));
+        return view('wallet.index', compact('id', 'balance', 'missingWallets', 'existsWallets'));
     }
 
     public function show(): View

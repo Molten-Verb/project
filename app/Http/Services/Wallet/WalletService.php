@@ -7,9 +7,10 @@ use App\Models\Transaction;
 
 class WalletService
 {
-    protected array $balance;
+    protected array $balances;
+    protected $walletBalance;
 
-    public function getBalance(object $wallets): array
+    public function getBalanceOfAllWallets(object $wallets): array
     {
         // Получаем суммы по валютам
         $amounts = collect(CurrencyType::cases())
@@ -23,9 +24,17 @@ class WalletService
         $balance = [];
         foreach (CurrencyType::cases() as $value)
         {
-            $balance[$value->name] = $amounts[$value->value];
+            $balances[$value->name] = $amounts[$value->value];
         }
 
-        return $this->balance = $balance;
+        return $this->balances = $balances;
+    }
+
+    public function getWalletBalance(object $wallet): float
+    {
+        $walletId = $wallet->id ?? null;
+        $amount = $walletId ? Transaction::where('wallet_id', $walletId)->sum('value') : 0;
+
+        return $this->walletBalance = $amount;
     }
 }

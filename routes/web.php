@@ -7,6 +7,8 @@ use App\Http\Controllers\SocialController;
 use App\Http\Controllers\WalletController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\CurrencyController;
+use App\Http\Controllers\OwnRacersController;
+use App\Http\Controllers\MarketRacerController;
 
 /*
 |--------------------------------------------------------------------------
@@ -62,4 +64,22 @@ Route::middleware('auth')->prefix('wallet/{id}')
         Route::get('/transaction_history', 'show')->name('history');
         Route::patch('/', 'update')->name('update');
         Route::post('/', 'store')->name('store');
+});
+
+Route::prefix('market')
+    ->name('market.')
+    ->controller(MarketRacerController::class)
+    ->group(function () {
+        Route::get('/', 'index')->name('index');
+        Route::middleware('auth')->post('/buy/{racer}', 'buy')->name('buy');
+        Route::post('/sell/{racer}', 'sell')->name('sell');
+});
+
+Route::middleware('auth')->prefix('ownRacers')
+    ->name('ownRacers.')
+    ->controller(OwnRacersController::class)
+    ->group(function () {
+        Route::get('/', 'index')->name('index');
+        Route::post('/sell/{racer}/half-price', 'sellHalfPrice')->name('sell.half-price');
+        Route::patch('/update/{racer}', 'update')->name('update');
 });
