@@ -98,4 +98,7 @@
             </div>
         </div>
     </div>
+    <div>
+        {{ $racers->links() }}
+    </div>
 </x-app-layout>

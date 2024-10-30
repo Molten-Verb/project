@@ -17,11 +17,11 @@
                     <x-nav-link :href="url('/')" :active="request()->routeIs('/')">
                         {{ __('Домой') }}
                     </x-nav-link>
-                    <x-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')">
-                        {{ __('Дэшборд') }}
-                    </x-nav-link>
                     <x-nav-link :href="route('wallet.index', ['id => $id'])" :active="request()->routeIs('wallet.index')">
                         {{ __('Кошелёк') }}
+                    </x-nav-link>
+                    <x-nav-link :href="route('market.index')" :active="request()->routeIs('market.index')">
+                        {{ __('Биржа пилотов') }}
                     </x-nav-link>
                     <x-nav-link :href="route('ownRacers.index')" :active="request()->routeIs('ownRacers.index')">
                         {{ __('Мои пилоты') }}

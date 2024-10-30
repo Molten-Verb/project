@@ -14,7 +14,7 @@ class OwnRacersController extends Controller
 {
     public function index(): View
     {
-        $racers = Auth::user()->racers()->get();
+        $racers = Auth::user()->racers()->paginate(6);
 
         return view('ownRacers', compact('racers'));
     }
