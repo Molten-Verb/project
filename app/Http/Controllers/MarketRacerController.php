@@ -21,7 +21,7 @@ class MarketRacerController extends Controller
             ->where('on_market', true)
             ->defaultSort('id')
             ->allowedSorts('id', 'name', 'country', 'price')
-            ->get();
+            ->paginate(10);
 
         return view('market', compact('racers'));
     }

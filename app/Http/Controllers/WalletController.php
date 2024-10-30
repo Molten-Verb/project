@@ -3,11 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Models\User;
-use App\Models\Wallet;
 use Illuminate\View\View;
-use App\Enums\CurrencyType;
 use App\Models\Transaction;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Redirect;
@@ -39,9 +36,11 @@ class WalletController extends Controller
     public function show(): View
     {
         $user = Auth::user();
-        $userWallets = $user->wallets()->with('transactions')->get();
 
-        return view('wallet.show', compact('userWallets'));
+        $transactions = Transaction::whereIn('wallet_id', $user->wallets->pluck('id'))
+                        ->paginate(15);
+
+        return view('wallet.show', compact('transactions'));
     }
 
     public function store(WalletCreateRequest $request): RedirectResponse
@@ -52,7 +51,7 @@ class WalletController extends Controller
         $validated = $request->validated();
 
         $user->wallets()->create([
-            'currency_type' => $validated['currency']
+            'currency_type' => $validated['currency'],
         ]);
 
         return redirect()->route('wallet.index', ['id' => $id]);
