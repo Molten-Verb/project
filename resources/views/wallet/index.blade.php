@@ -7,7 +7,7 @@
 
     <div class="py-12">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
-            <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg" style="max-width: 800px;">
+            <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
 
                 @if (!empty($missingWallets))
                     <div class="p-6 text-gray-900">
@@ -33,7 +33,7 @@
                             @foreach ($balance as $currencyName => $value)
                                 @if (in_array($currencyName, $existsWallets))
                                     <a
-                                    class="mt-1 block w-40 rounded-md border border-gray-300 bg-white py-2 px-3 shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500">
+                                    class="mt-1 block w-60 rounded-md border border-gray-300 bg-white py-2 px-3 shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500">
                                     {{ number_format($value, 2, ',', ' ') }} {{ $currencyName }}</a>
                                 @endif
                             @endforeach

@@ -54,8 +54,8 @@
                             <th scope="col" class="px-6 py-4 flex items-center justify-between">
                                 <div class="text-center">Рыночная цена USD</div>
                                 <div class="flex flex-col">
-                                    <a href="?sort=price" class="fa fa-sort-up"></a>
-                                    <a href="?sort=-price" class="fa fa-sort-down"></a>
+                                    <a href="?sort=-price" class="fa fa-sort-up"></a>
+                                    <a href="?sort=price" class="fa fa-sort-down"></a>
                                 </div>
                             </th>
                             <th scope="col" class="px-6 py-4">
