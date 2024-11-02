@@ -38,7 +38,7 @@ class WalletController extends Controller
         $user = Auth::user();
 
         $transactions = Transaction::whereIn('wallet_id', $user->wallets->pluck('id'))
-                        ->paginate(15);
+                        ->paginate(config('transactions.per_page'));
 
         return view('wallet.show', compact('transactions'));
     }

@@ -16,7 +16,7 @@ class OwnRacersController extends Controller
 {
     public function index(): View
     {
-        $racers = Auth::user()->racers()->paginate(6);
+        $racers = Auth::user()->racers()->paginate(config('racers.own_racers_per_page'));
 
         return view('ownRacers', compact('racers'));
     }
@@ -35,9 +35,9 @@ class OwnRacersController extends Controller
                 'user_id' => null,
                 'on_market' => true,
             ]);
-
-            Mail::to(Auth::user())->send(new RacerSelledHalfPriceMail($racer, $price));
         });
+
+        Mail::to(Auth::user())->send(new RacerSelledHalfPriceMail($racer, $price));
 
         return redirect()
             ->route('ownRacers.index')
@@ -56,6 +56,6 @@ class OwnRacersController extends Controller
 
         $racer->update(['on_market' => $onMarket]); // ПОЗЖЕ добавить возможность задать цену
 
-        return redirect()->route('ownRacers.index')->with('status', 'ok');
+        return redirect()->route('ownRacers.index')->with('message', 'Успешно');
     }
 }

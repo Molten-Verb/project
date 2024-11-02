@@ -8,19 +8,20 @@ use Illuminate\Mail\Mailable;
 use Illuminate\Mail\Mailables\Content;
 use Illuminate\Mail\Mailables\Envelope;
 use Illuminate\Queue\SerializesModels;
+use Illuminate\Mail\Mailables\Attachment;
 
 
 class RacerPurchasedMail extends Mailable implements ShouldQueue
 {
     use Queueable, SerializesModels;
 
-    public $name;
+    public $racer;
     /**
      * Create a new message instance.
      */
     public function __construct(object $racer)
     {
-        $this->name = $racer->name;
+        $this->racer = $racer;
     }
 
     /**
@@ -29,7 +30,7 @@ class RacerPurchasedMail extends Mailable implements ShouldQueue
     public function envelope(): Envelope
     {
         return new Envelope(
-            subject: 'Racer Purchased',
+            subject: 'Гонщик Приобретен',
         );
     }
 

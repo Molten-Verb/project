@@ -22,9 +22,8 @@ class MarketRacerController extends Controller
     {
         $racers = QueryBuilder::for(Racer::class)
             ->where('on_market', true)
-            ->defaultSort('id')
-            ->allowedSorts('id', 'name', 'country', 'price')
-            ->paginate(5);
+            ->allowedSorts('name', 'country', 'price')
+            ->paginate(config('racers.market_racers_per_page'));
 
         return view('market', compact('racers'));
     }
@@ -50,7 +49,6 @@ class MarketRacerController extends Controller
         });
 
         Mail::to(Auth::user())->send(new RacerPurchasedMail($racer));
-        //Auth::user()->notify(new RacerPurchasedNotification($racer)); не сработало
 
         return redirect()->route('market.index')->with('message', 'Успешно');
     }

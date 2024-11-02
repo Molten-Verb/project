@@ -13,14 +13,14 @@ class RacerSelledHalfPriceMail extends Mailable implements ShouldQueue
 {
     use Queueable, SerializesModels;
 
-    public $name;
+    public $racer;
     public $price;
     /**
      * Create a new message instance.
      */
     public function __construct(object $racer, float $price)
     {
-        $this->name = $racer->name;
+        $this->racer = $racer;
         $this->price = $price;
     }
 
