@@ -2,20 +2,21 @@
 
 namespace App\Mail\Racer;
 
+use App\Models\Racer;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Mail\Mailable;
+use Illuminate\Mail\Mailables\Attachment;
 use Illuminate\Mail\Mailables\Content;
 use Illuminate\Mail\Mailables\Envelope;
 use Illuminate\Queue\SerializesModels;
-use Illuminate\Mail\Mailables\Attachment;
-
 
 class RacerPurchasedMail extends Mailable implements ShouldQueue
 {
     use Queueable, SerializesModels;
 
-    public $racer;
+    public Racer $racer;
+
     /**
      * Create a new message instance.
      */
@@ -30,7 +31,7 @@ class RacerPurchasedMail extends Mailable implements ShouldQueue
     public function envelope(): Envelope
     {
         return new Envelope(
-            subject: 'Гонщик Приобретен',
+            subject: 'Гонщик приобретен',
         );
     }
 
