@@ -4,12 +4,15 @@ namespace App\Http\Controllers;
 
 use App\Enums\CurrencyType;
 use App\Http\Requests\EnoughBalanceRequest;
+use App\Mail\Racer\RacerPurchasedMail;
+use App\Mail\Racer\RacerSelledFullPriceMail;
 use App\Models\Racer;
 use App\Models\User;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\View\View;
 use Spatie\QueryBuilder\QueryBuilder;
 
@@ -19,9 +22,8 @@ class MarketRacerController extends Controller
     {
         $racers = QueryBuilder::for(Racer::class)
             ->where('on_market', true)
-            ->defaultSort('id')
-            ->allowedSorts('id', 'name', 'country', 'price')
-            ->get();
+            ->allowedSorts('name', 'country', 'price')
+            ->paginate(config('racers.market_racers_per_page'));
 
         return view('market', compact('racers'));
     }
@@ -35,11 +37,18 @@ class MarketRacerController extends Controller
                 ->transactions()
                 ->create(['value' => -$racer->price]);
 
+            if (!empty($racer->user_id)) { // при покупке пилота принадлежащего пользователю
+                Mail::to(User::firstwhere('id', $racer->user_id))
+                    ->send(new RacerSelledFullPriceMail($racer));
+            }
+
             $racer->update([
                 'user_id' => Auth::user()->id,
                 'on_market' => false,
             ]);
         });
+
+        Mail::to(Auth::user())->send(new RacerPurchasedMail($racer));
 
         return redirect()->route('market.index')->with('message', 'Успешно');
     }

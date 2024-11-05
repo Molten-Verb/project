@@ -7,7 +7,7 @@
             <div class="flex">
                 <!-- Logo -->
                 <div class="shrink-0 flex items-center">
-                    <a href="{{ route('dashboard') }}">
+                    <a href="{{ route('profile.edit') }}">
                         <x-application-logo class="block h-9 w-auto fill-current text-gray-800" />
                     </a>
                 </div>
@@ -17,11 +17,11 @@
                     <x-nav-link :href="url('/')" :active="request()->routeIs('/')">
                         {{ __('Домой') }}
                     </x-nav-link>
-                    <x-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')">
-                        {{ __('Дэшборд') }}
-                    </x-nav-link>
                     <x-nav-link :href="route('wallet.index', ['id => $id'])" :active="request()->routeIs('wallet.index')">
                         {{ __('Кошелёк') }}
+                    </x-nav-link>
+                    <x-nav-link :href="route('market.index')" :active="request()->routeIs('market.index')">
+                        {{ __('Биржа пилотов') }}
                     </x-nav-link>
                     <x-nav-link :href="route('ownRacers.index')" :active="request()->routeIs('ownRacers.index')">
                         {{ __('Мои пилоты') }}
@@ -105,8 +105,8 @@
     <!-- Responsive Navigation Menu -->
     <div :class="{ 'block': open, 'hidden': !open }" class="hidden sm:hidden">
         <div class="pt-2 pb-3 space-y-1">
-            <x-responsive-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')">
-                {{ __('Дэшборд') }}
+            <x-responsive-nav-link :href="route('profile.edit')" :active="request()->routeIs('profile.edit')">
+                {{ __('Профиль') }}
             </x-responsive-nav-link>
         </div>
 

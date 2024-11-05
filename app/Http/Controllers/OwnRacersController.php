@@ -2,19 +2,21 @@
 
 namespace App\Http\Controllers;
 
-use App\Enums\CurrencyType;
 use App\Models\Racer;
-use Illuminate\Http\RedirectResponse;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\DB;
 use Illuminate\View\View;
+use App\Enums\CurrencyType;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Mail;
+use Illuminate\Http\RedirectResponse;
+use App\Mail\Racer\RacerSelledHalfPriceMail;
 
 class OwnRacersController extends Controller
 {
     public function index(): View
     {
-        $racers = Auth::user()->racers()->get();
+        $racers = Auth::user()->racers()->paginate(config('racers.own_racers_per_page'));
 
         return view('ownRacers', compact('racers'));
     }
@@ -22,12 +24,12 @@ class OwnRacersController extends Controller
     public function sellHalfPrice(Racer $racer, Request $request): RedirectResponse
     {
         $wallet = Auth::user()->neededWallet(CurrencyType::USD);
-        $discount = config('racers.discount') / 100;
+        $price = $racer->price * (config('racers.discount') / 100);
 
-        DB::transaction(function () use ($wallet, $racer, $discount) {
+        DB::transaction(function () use ($wallet, $racer, $price) {
             $wallet
                 ->transactions()
-                ->create(['value' => ($racer->price * $discount)]);
+                ->create(['value' => $price]);
 
             $racer->update([
                 'user_id' => null,
@@ -35,9 +37,11 @@ class OwnRacersController extends Controller
             ]);
         });
 
+        Mail::to(Auth::user())->send(new RacerSelledHalfPriceMail($racer, $price));
+
         return redirect()
             ->route('ownRacers.index')
-            ->with('status', 'Successfully sold');
+            ->with('message', 'Успешно');
     }
 
     public function update(Racer $racer, Request $request): RedirectResponse // В реквесте валидируем цену
@@ -52,6 +56,6 @@ class OwnRacersController extends Controller
 
         $racer->update(['on_market' => $onMarket]); // ПОЗЖЕ добавить возможность задать цену
 
-        return redirect()->route('ownRacers.index')->with('status', 'ok');
+        return redirect()->route('ownRacers.index')->with('message', 'Успешно');
     }
 }

@@ -8,6 +8,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Exception;
 use App\Models\User;
+use App\Providers\RouteServiceProvider;
 
 class SocialController extends Controller
 {
@@ -15,11 +16,11 @@ class SocialController extends Controller
      {
          return Socialite::driver('google')->redirect();
      }
-     
+
      public function googleCallback()
      {
         $googleUser = Socialite::driver('google')->user();
-        
+
         $user = User::updateOrCreate([
             'google_id' => $googleUser->id,
         ], [
@@ -28,10 +29,10 @@ class SocialController extends Controller
             'avatar' => $googleUser->getAvatar(),
             'password' => Hash::make('12345678'),
         ]);
-    
+
         Auth::login($user);
-    
-        return redirect('/dashboard');
+
+        return redirect(RouteServiceProvider::HOME);
     }
 }
 
