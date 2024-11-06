@@ -35,31 +35,37 @@
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8 flex justify-center">
             <div class="bg-white shadow-sm sm:rounded-lg p-6 flex justify-center">
                 <table class="min-w-full text-center text-sm font-light text-surface dark:text-white">
-                    <thead class="border-b bg-green text-black text-base rounded-t-lg">
+                    <thead class="border-b text-black text-base rounded-t-lg">
                         <tr>
-                            <th scope="col" class="px-6 py-4 flex items-center justify-between">
-                                <div class="text-center">Гонщик</div>
-                                <div class="flex flex-col">
-                                    <a href="?sort=name" class="fa fa-sort-up"></a>
-                                    <a href="?sort=-name" class="fa fa-sort-down"></a>
+                            <th scope="col" class="px-6 py-4 text-center">
+                                <div class="flex flex-row items-center justify-center">
+                                    <div>Гонщик</div>
+                                    <div class="flex flex-col ml-2">
+                                        <a href="?sort=name" class="fa fa-sort-up"></a>
+                                        <a href="?sort=-name" class="fa fa-sort-down"></a>
+                                    </div>
                                 </div>
                             </th>
-                            <th scope="col" class="px-6 py-4 justify-between">
-                                <div class="text-center">Страна</div>
-                                <div class="flex flex-col">
+                            <th scope="col" class="px-6 py-4 text-center">
+                                <div class="flex flex-row items-center justify-center">
+                                <div>Страна</div>
+                                <div class="flex flex-col ml-2">
                                     <a href="?sort=country" class="fa fa-sort-up"></a>
                                     <a href="?sort=-country" class="fa fa-sort-down"></a>
                                 </div>
+                            </div>
                             </th>
-                            <th scope="col" class="px-6 py-4 flex items-center justify-between">
-                                <div class="text-center">Рыночная цена USD</div>
-                                <div class="flex flex-col">
+                            <th scope="col" class="px-6 py-4 text-center">
+                                <div class="flex flex-row items-center justify-center">
+                                <div>Рыночная цена USD</div>
+                                <div class="flex flex-col ml-2">
                                     <a href="?sort=-price" class="fa fa-sort-up"></a>
                                     <a href="?sort=price" class="fa fa-sort-down"></a>
                                 </div>
+                            </div>
                             </th>
-                            <th scope="col" class="px-6 py-4">
-                                <div class="flex flex-col">
+                            <th scope="col" class="px-6 py-4 text-center">
+                                <div class="flex flex-col items-center">
                                     Купить
                                 </div>
                             </th>
