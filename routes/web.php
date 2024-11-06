@@ -81,7 +81,8 @@ Route::middleware('auth')->prefix('ownRacers')
         Route::patch('/update/{racer}', 'update')->name('update');
 });
 
-Route::prefix('users')
+Route::middleware('auth', 'role:admin')
+    ->prefix('users')
     ->name('users.')
     ->controller(UsersController::class)
     ->group( function () {
