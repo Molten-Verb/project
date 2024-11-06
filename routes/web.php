@@ -2,6 +2,7 @@
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\UsersController;
 use App\Http\Controllers\AvatarController;
 use App\Http\Controllers\SocialController;
 use App\Http\Controllers\WalletController;
@@ -79,3 +80,11 @@ Route::middleware('auth')->prefix('ownRacers')
         Route::post('/sell/{racer}/half-price', 'sellHalfPrice')->name('sell.half-price');
         Route::patch('/update/{racer}', 'update')->name('update');
 });
+
+Route::prefix('users')
+    ->name('users.')
+    ->controller(UsersController::class)
+    ->group( function () {
+        Route::get('/', 'index')->name('index');
+        Route::delete('/{user}', 'destroy')->name('destroy');
+    });
