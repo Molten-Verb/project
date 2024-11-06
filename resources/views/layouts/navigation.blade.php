@@ -26,6 +26,9 @@
                     <x-nav-link :href="route('ownRacers.index')" :active="request()->routeIs('ownRacers.index')">
                         {{ __('Мои пилоты') }}
                     </x-nav-link>
+                    <x-nav-link :href="route('users.index')" :active="request()->routeIs('users.index')">
+                        {{ __('Пользователи') }}
+                    </x-nav-link>
                 </div>
             </div>
 
