@@ -22,8 +22,6 @@ class PermissionsSeeder extends Seeder
         $userRole = Role::create(['name' => 'user']);
 
         $seedAdmin = User::create(['name' => 'admin', 'email' => 'admin@mail.com', 'password' => 'admin']);
-
-        $giveRoleToAdmin = User::firstwhere('name', 'admin'); // Найдите пользователя
-        $giveRoleToAdmin->assignRole('admin'); // Назначьте роль админа
+        $seedAdmin->assignRole('admin'); // Назначить роль админа
     }
 }
