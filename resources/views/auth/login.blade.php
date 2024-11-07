@@ -43,12 +43,13 @@
                 {{ __('Войти') }}
             </x-primary-button>
         </div>
-        
-        <!-- Авторизация через vkontakte -->
+
+        <!-- Авторизация через google -->
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
         <div class="flex items-center justify-end mt-4">
-                <a href="{{ route('google.auth') }}">
-                    <img src="https://developers.google.com/identity/images/btn_google_signin_dark_normal_web.png" style="margin-left: 3em;">
-                </a>
+            <a href="{{ route('google.auth') }}" class="btn btn-google" style="display: flex; align-items: center; justify-content: center;">
+                <i class="fab fa-google" style="margin-right: 8px; font-size: 20px;"></i> Войти с помощью Google
+            </a>
         </div>
     </form>
 </x-guest-layout>
