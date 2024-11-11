@@ -1,6 +1,10 @@
 <?php
 
+use App\Models\Racer;
+use Illuminate\Http\Request;
+use App\Http\Resources\RacerResource;
 use Illuminate\Support\Facades\Route;
+use Spatie\QueryBuilder\QueryBuilder;
 use App\Http\Controllers\API\RacerAPI;
 use App\Http\Controllers\UsersController;
 use App\Http\Controllers\SocialController;
@@ -89,9 +93,4 @@ Route::middleware('auth', 'role:admin')
         Route::delete('/{user}', 'destroy')->name('destroy');
     });
 
-Route::prefix('api')
-    ->name('api.')
-    ->controller(RacerAPI::class)
-    ->group(function () {
-        Route::get('/', 'index')->name('index');
-    });
+Route::get('/api/racers', [RacerAPI::class, 'index']);

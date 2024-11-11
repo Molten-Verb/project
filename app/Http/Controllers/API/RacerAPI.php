@@ -5,19 +5,21 @@ namespace App\Http\Controllers\API;
 use App\Models\Racer;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use App\Http\Resources\RacerResource;
 use Spatie\QueryBuilder\QueryBuilder;
 
 class RacerAPI extends Controller
 {
     public function index(Request $request)
     {
+        $perPage = $request->get('per_page', 10);
+
         $racers = QueryBuilder::for(Racer::class)
-            ->allowedFields('name', 'country', 'price')
             ->allowedFilters('name', 'country', 'price')
-            ->jsonPaginate(config('json-api-paginate.default_size'));
+            ->paginate($perPage);
 
-            // например http://127.0.0.1:8000/api?fields[racers]=name
+            // например http://127.0.0.1:8000/api?filters[racers]=имя&фамилия
 
-        return response()->json($racers, 200, [], JSON_UNESCAPED_UNICODE);
+        return response()->json(RacerResource::collection($racers), 200, [], JSON_UNESCAPED_UNICODE);
     }
 }
