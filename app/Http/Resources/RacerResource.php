@@ -20,16 +20,4 @@ class RacerResource extends JsonResource
             'price' => $this->price,
         ];
     }
-
-    public function with(Request $request): array
-    {
-        // Добавляем метаданные пагинации
-        return [
-            'meta' => [
-                'current_page' => $this->resource->currentPage(),
-                'last_page' => $this->resource->lastPage(),
-                'total' => $this->resource->total(),
-            ],
-        ];
-    }
 }

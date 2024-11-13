@@ -2,6 +2,7 @@
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\API\RacerAPI;
 
 /*
 |--------------------------------------------------------------------------
@@ -17,3 +18,6 @@ use Illuminate\Support\Facades\Route;
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
+
+Route::get('/racers', [RacerAPI::class, 'index']);
+// запрос вводить с префиксом /api, (добавляется автоматически посредником)

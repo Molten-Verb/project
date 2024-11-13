@@ -12,14 +12,10 @@ class RacerAPI extends Controller
 {
     public function index(Request $request)
     {
-        $perPage = $request->get('per_page', 10);
-
         $racers = QueryBuilder::for(Racer::class)
-            ->allowedFilters('name', 'country', 'price')
-            ->paginate($perPage);
+            ->allowedFilters('name', 'country', 'price');
+            // например http://127.0.0.1:8000/api?filters[price]=1000000
 
-            // например http://127.0.0.1:8000/api?filters[racers]=имя&фамилия
-
-        return response()->json(RacerResource::collection($racers), 200, [], JSON_UNESCAPED_UNICODE);
+        return RacerResource::collection($racers->jsonPaginate());
     }
 }
