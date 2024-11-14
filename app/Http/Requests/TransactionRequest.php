@@ -22,7 +22,8 @@ class TransactionRequest extends FormRequest
             ],
             'value' => [
                 'required',
-                'numeric'
+                'numeric',
+                'min:0.05',
             ]
         ];
     }

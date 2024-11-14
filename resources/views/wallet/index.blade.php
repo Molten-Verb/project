@@ -5,7 +5,7 @@
         </h2>
     </x-slot>
 
-    <div class="py-12">
+    <div class="py-3">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
             <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
 
@@ -19,7 +19,9 @@
                         {{ html()->label('Выберите валюту кошелька', 'currency') }}
                         {{ html()->select('currency', $missingWallets)->class('mt-1 block w-40 rounded-md border border-gray-300 bg-white py-2 px-3 shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500') }}
 
-                        <x-primary-button class="bg-blue-500 shadow-blue-500 shadow-lg shadow-blue-500/50 hover:bg-blue-700" style="background-color: #282aa7;">
+                        <x-primary-button
+                            class="bg-blue-500 shadow-blue-500 shadow-lg shadow-blue-500/50 hover:bg-blue-700"
+                            style="background-color: #282aa7;">
                             {{ __('Создать кошелек') }}
                         </x-primary-button>
                         {{ html()->closeModelForm() }}
@@ -33,15 +35,16 @@
                             @foreach ($balance as $currencyName => $value)
                                 @if (in_array($currencyName, $existsWallets))
                                     <a
-                                    class="mt-1 block w-60 rounded-md border border-gray-300 bg-white py-2 px-3 shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500">
-                                    {{ number_format($value, 2, ',', ' ') }} {{ $currencyName }}</a>
+                                        class="mt-1 block w-60 rounded-md border border-gray-300 bg-white py-2 px-3 shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500">
+                                        {{ number_format($value, 2, ',', ' ') }} {{ $currencyName }}</a>
                                 @endif
                             @endforeach
                         </div>
                         <div>
                             <x-primary-button
                                 onclick="window.location.href='{{ route('wallet.history', ['id => $id']) }}'"
-                                class="bg-blue-500 shadow-blue-500 shadow-lg shadow-blue-500/50 hover:bg-blue-700" style="background-color: #282aa7;">
+                                class="bg-blue-500 shadow-blue-500 shadow-lg shadow-blue-500/50 hover:bg-blue-700"
+                                style="background-color: #282aa7;">
                                 История транзакций
                             </x-primary-button>
                         </div>
@@ -60,11 +63,14 @@
                             {{ html()->select('currency', $existsWallets)->class('mt-1 block w-40 rounded-md border border-gray-300 bg-white py-2 px-3 shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500') }}
                         </div>
                     </div>
-                    <div class="p-6 text-gray-900">
-                        <x-primary-button
-                            class="bg-green-500 shadow-green-500 shadow-lg shadow-green-500/50 hover:bg-green-700">
-                            {{ __('Пополнить') }}
-                        </x-primary-button>
+                    <div class="p-6">
+                        <div class="flex flex-row items-center">
+                            <x-primary-button
+                                class="bg-green-500 shadow-green-500 shadow-lg shadow-green-500/50 hover:bg-green-700">
+                                {{ __('Пополнить') }}
+                            </x-primary-button>
+                            <x-input-error class="text-center ml-2" :messages="$errors->get('value')" />
+                        </div>
                     </div>
 
                     {{ html()->closeModelForm() }}
