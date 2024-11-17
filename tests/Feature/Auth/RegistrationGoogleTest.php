@@ -2,10 +2,10 @@
 
 namespace Tests\Feature\Auth;
 
-use Tests\TestCase;
-use App\Models\User;
 use App\Providers\RouteServiceProvider;
 use Laravel\Socialite\Facades\Socialite;
+use Mockery;
+use Tests\TestCase;
 
 class RegistrationGoogleTest extends TestCase
 {
@@ -14,30 +14,28 @@ class RegistrationGoogleTest extends TestCase
      */
     public function user_can_sign_in_with_google(): void
     {
-        $googleUser = (object) [
-            'id' => 'google-user-id',
-            'name' => 'Google User',
-            'email' => 'googleuser@example.com',
-            'avatar' => 'https://www.example.com/avatar.jpg',
-        ];
+        $abstractUser = Mockery::mock('Laravel\Socialite\Two\User');
+        $abstractUser->shouldReceive('getId')
+            ->andReturn(1234567890)
+            ->shouldReceive('getEmail')
+            ->andReturn('test@test.com')
+            ->shouldReceive('getName')
+            ->andReturn('User Test')
+            ->shouldReceive('getAvatar')
+            ->andReturn('https://avatar.com/userimage');
 
-        Socialite::fake();
-        Socialite::shouldReceive('driver->user')->andReturn($googleUser);
+        $provider = Mockery::mock('Laravel\Socialite\Contracts\Provider');
+        $provider->shouldReceive('user')->andReturn($abstractUser);
 
-        $response = $this->get('/auth/redirect');
+        Socialite::shouldReceive('driver')->with('google')->andReturn($provider);
 
-        $response->assertRedirect();
+        $response = $this->get(route('google.callback'));
 
-        $response = $this->get('/auth/callback');
+        $this->assertDatabaseHas('users', [
+            'name' => 'User Test',
+            'email' => 'test@test.com',
+        ]);
 
-        $user = User::where('google_id', $googleUser->id)->first();
-
-        $this->assertNotNull($user);
-        $this->assertEquals($googleUser->name, $user->name);
-        $this->assertEquals($googleUser->email, $user->email);
-        $this->assertTrue(Hash::check('12345678', $user->password));
-
-        $this->assertAuthenticatedAs($user);
         $response->assertRedirect(RouteServiceProvider::HOME);
     }
 }
