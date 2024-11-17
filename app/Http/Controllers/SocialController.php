@@ -9,6 +9,8 @@ use Illuminate\Support\Facades\Hash;
 use Exception;
 use App\Models\User;
 use App\Providers\RouteServiceProvider;
+use Spatie\Permission\Models\Role;
+use Spatie\Permission\Models\Permission;
 
 class SocialController extends Controller
 {
@@ -29,6 +31,8 @@ class SocialController extends Controller
             'avatar' => $googleUser->getAvatar(),
             'password' => Hash::make('12345678'),
         ]);
+
+        $user->assignRole('user');
 
         Auth::login($user);
 
