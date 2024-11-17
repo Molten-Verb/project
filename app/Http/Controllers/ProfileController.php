@@ -8,7 +8,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Redirect;
-use App\Http\Services\AvatarUpdateRequest;
+use App\Http\Requests\AvatarUpdateRequest;
 use App\Http\Services\SaveImage;
 use App\Http\Requests\ProfileUpdateRequest;
 use Illuminate\Foundation\Validation\ValidatesRequests;

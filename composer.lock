@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "67ef5e5b7db058d6076ad2ee12102b7f",
+    "content-hash": "a40147a99390ab1c55257350a641da2a",
     "packages": [
         {
             "name": "brick/math",
@@ -3804,6 +3804,71 @@
                 }
             ],
             "time": "2024-02-20T15:17:00+00:00"
+        },
+        {
+            "name": "spatie/laravel-json-api-paginate",
+            "version": "1.15.1",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/spatie/laravel-json-api-paginate.git",
+                "reference": "acdd4dfa94541f4667b30dfef0c07918f7764e53"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/spatie/laravel-json-api-paginate/zipball/acdd4dfa94541f4667b30dfef0c07918f7764e53",
+                "reference": "acdd4dfa94541f4667b30dfef0c07918f7764e53",
+                "shasum": ""
+            },
+            "require": {
+                "illuminate/support": "^10.0|^11.0",
+                "php": "^8.0"
+            },
+            "require-dev": {
+                "orchestra/testbench": "^8.21.1|^9.0",
+                "pestphp/pest": "^2.34",
+                "phpunit/phpunit": "^9.0|^10.5.10"
+            },
+            "type": "library",
+            "extra": {
+                "laravel": {
+                    "providers": [
+                        "Spatie\\JsonApiPaginate\\JsonApiPaginateServiceProvider"
+                    ]
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Spatie\\JsonApiPaginate\\": "src"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Freek Van der Herten",
+                    "email": "freek@spatie.be",
+                    "homepage": "https://spatie.be",
+                    "role": "Developer"
+                }
+            ],
+            "description": "A paginator that plays nice with the JSON API spec",
+            "homepage": "https://github.com/spatie/laravel-json-api-paginate",
+            "keywords": [
+                "laravel-json-api-paginate",
+                "spatie"
+            ],
+            "support": {
+                "source": "https://github.com/spatie/laravel-json-api-paginate/tree/1.15.1"
+            },
+            "funding": [
+                {
+                    "url": "https://spatie.be/open-source/support-us",
+                    "type": "custom"
+                }
+            ],
+            "time": "2024-08-06T06:59:31+00:00"
         },
         {
             "name": "spatie/laravel-package-tools",
