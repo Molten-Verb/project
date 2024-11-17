@@ -4,9 +4,7 @@ namespace Tests\Feature;
 
 use Tests\TestCase;
 use App\Models\User;
-use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Queue;
-use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Support\Facades\Notification;
 use Illuminate\Auth\Notifications\VerifyEmail;
 use App\Notifications\SendVerifyWithQueueNotification;
@@ -14,28 +12,20 @@ use App\Notifications\SendVerifyWithQueueNotification;
 class EmailTest extends TestCase
 {
     /**
-     * A basic feature test example.
+     * @test
      */
-    public function test_email_verification_notification_is_queued(): void
+    public function email_verification_notification_is_queued(): void
     {
         Notification::fake();
+        Queue::fake();
 
-        $this->seedRoles();
+        $user = User::factory()->create([
+            'email_verified_at' => null,
+        ]);
 
-        $name = fake()->name();
-        $email = fake()->unique()->safeEmail();
+        $response = $this->actingAs($user)->post('/email/verification-notification');
 
-        $data = [
-            'name' => $name,
-            'email' => $email,
-            'password' => 'password',
-            'password_confirmation' => 'password',
-        ];
-
-        $response = $this->post('/register', $data);
-
-        $user = User::where('email', $email)->first();
-
-        Notification::assertSentToQueue($user, SendVerifyWithQueueNotification::class);
+        Notification::assertSentTo([$user], SendVerifyWithQueueNotification::class);
+        Queue::assertPushed(SendVerifyWithQueueNotification::class, 1); // тест не видит в очереди
     }
 }
