@@ -20,7 +20,7 @@ class RacerFactory extends Factory
         return [
             'name' => $name,
             'country' => fake()->country(),
-            'price' => fake()->randomFloat(2, 100, 10000),
+            'price' => 100,
             'user_id' => null,
             'on_market' => true,
             'avatar' => 'storage/avatars/' . str_replace(' ', '_', strtolower($name)) . '.jpg',
