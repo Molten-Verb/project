@@ -16,6 +16,6 @@ Laravel 10, PHP8.3, MySql.
 Возможность выставить гонщика на биржу за полную стоимость или продать сразу за определенный процент от его стоимости.
 
 ## Перед запуском
-php artisan db:seed PermissionsSeeder
-php artisan db:seed RacerSeeder
+php artisan db:seed PermissionsSeeder 
+<br>php artisan db:seed RacerSeeder
 
