@@ -53,4 +53,12 @@ class RoleTest extends TestCase
         $response->assertDontSee('Кошелек');
         $response->assertDontSee('Мои пилоты');
     }
+
+    public function test_user_cant_see_button_users_in_navigation()
+    {
+        $user = $this->signIn()->getUser();
+
+        $response = $this->get(route('market.index'));
+        $response->assertDontSee('Пользователи');
+    }
 }
