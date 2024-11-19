@@ -13,9 +13,6 @@ use Illuminate\Foundation\Testing\WithFaker;
 
 class RacerCanBeBoughtTest extends TestCase
 {
-    /**
-     *
-     */
     public function test_racer_see_on_market(): void
     {
         $racer = Racer::factory()->create();
@@ -26,15 +23,11 @@ class RacerCanBeBoughtTest extends TestCase
 
     public function test_user_can_buy_racer(): void
     {
-        $user = User::factory()
-            ->has((Wallet::factory())->has(Transaction::factory()))
-            ->create();
-
-        $this->actingAs($user);
-
+        $user = $this->signIn()->getUser();
         $racer = Racer::factory()->create();
 
         $response = $this->post(route('market.buy', $racer));
+
         $this->assertDatabaseHas('racers', [
             'id' => $racer->id,
             'user_id' => $user->id,
@@ -45,16 +38,11 @@ class RacerCanBeBoughtTest extends TestCase
         ]);
     }
 
-    public function test_mail_send_to_queue(): void
+    public function test_after_purchased_mail_send_to_queue(): void
     {
         Mail::fake();
 
-        $user = User::factory()
-            ->has((Wallet::factory())->has(Transaction::factory()))
-            ->create();
-
-        $this->actingAs($user);
-
+        $user = $this->signIn()->getUser();
         $racer = Racer::factory()->create();
 
         $response = $this->post(route('market.buy', $racer));

@@ -17,18 +17,24 @@
                     <x-nav-link :href="url('/')" :active="request()->routeIs('/')">
                         {{ __('Домой') }}
                     </x-nav-link>
-                    <x-nav-link :href="route('wallet.index', ['id => $id'])" :active="request()->routeIs('wallet.index')">
-                        {{ __('Кошелёк') }}
-                    </x-nav-link>
                     <x-nav-link :href="route('market.index')" :active="request()->routeIs('market.index')">
                         {{ __('Биржа пилотов') }}
                     </x-nav-link>
-                    <x-nav-link :href="route('ownRacers.index')" :active="request()->routeIs('ownRacers.index')">
-                        {{ __('Мои пилоты') }}
-                    </x-nav-link>
-                    <x-nav-link :href="route('users.index')" :active="request()->routeIs('users.index')">
-                        {{ __('Пользователи') }}
-                    </x-nav-link>
+
+                    @if (Auth()->user())
+                        <x-nav-link :href="route('wallet.index', ['id => $id'])" :active="request()->routeIs('wallet.index')">
+                            {{ __('Кошелёк') }}
+                        </x-nav-link>
+                        <x-nav-link :href="route('ownRacers.index')" :active="request()->routeIs('ownRacers.index')">
+                            {{ __('Мои пилоты') }}
+                        </x-nav-link>
+                    @endif
+
+                    @role('admin'))
+                        <x-nav-link :href="route('users.index')" :active="request()->routeIs('users.index')">
+                            {{ __('Пользователи') }}
+                        </x-nav-link>
+                    @endrole
                 </div>
             </div>
 
