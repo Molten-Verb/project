@@ -12,7 +12,6 @@ class WalletService
 
     public function getBalanceOfAllWallets(object $wallets): array
     {
-        // Получаем суммы по валютам
         $amounts = collect(CurrencyType::cases())
             ->mapWithKeys(function (CurrencyType $currency) use ($wallets) {
             $walletId = $wallets->firstWhere('currency_type', $currency->value)->id ?? null; // $walletId: int|null

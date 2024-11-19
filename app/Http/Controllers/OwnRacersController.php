@@ -44,7 +44,7 @@ class OwnRacersController extends Controller
             ->with('message', 'Успешно');
     }
 
-    public function update(Racer $racer, Request $request): RedirectResponse // В реквесте валидируем цену
+    public function update(Racer $racer, Request $request): RedirectResponse
     {
         $onMarket = false;
         $statusMessage = 'racer not sale';
@@ -54,7 +54,7 @@ class OwnRacersController extends Controller
             $statusMessage = 'racer sale';
         }
 
-        $racer->update(['on_market' => $onMarket]); // ПОЗЖЕ добавить возможность задать цену
+        $racer->update(['on_market' => $onMarket]);
 
         return redirect()->route('ownRacers.index')->with('message', 'Успешно');
     }

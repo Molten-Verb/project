@@ -20,7 +20,6 @@ class WalletController extends Controller
         $user = Auth::user();
         $id = $user->id;
 
-        // Получаем кошельки пользователя
         $userWallets = $user->wallets;
 
         $walletExistsChecker = new WalletExistsChecker;
@@ -64,7 +63,6 @@ class WalletController extends Controller
 
         $validated = $request->validated();
 
-        // Получаем кошелек по валюте
         $wallet = $user->wallets()->firstWhere('currency_type', $validated['currency']);
 
         $wallet->transactions()->create([
