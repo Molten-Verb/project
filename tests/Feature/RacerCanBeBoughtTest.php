@@ -3,10 +3,7 @@
 namespace Tests\Feature;
 
 use Tests\TestCase;
-use App\Models\User;
 use App\Models\Racer;
-use App\Models\Wallet;
-use App\Models\Transaction;
 use Illuminate\Support\Facades\Mail;
 use App\Mail\Racer\RacerPurchasedMail;
 use Illuminate\Foundation\Testing\WithFaker;
