@@ -7,8 +7,9 @@ use App\Models\User;
 use App\Models\Racer;
 use App\Models\Wallet;
 use App\Models\Transaction;
+use Illuminate\Support\Facades\Mail;
+use App\Mail\Racer\RacerPurchasedMail;
 use Illuminate\Foundation\Testing\WithFaker;
-use Illuminate\Foundation\Testing\RefreshDatabase;
 
 class RacerCanBeBoughtTest extends TestCase
 {
@@ -42,5 +43,21 @@ class RacerCanBeBoughtTest extends TestCase
         $this->assertDatabaseHas('transactions', [
             'value' => -$racer->price,
         ]);
+    }
+
+    public function test_mail_send_to_queue(): void
+    {
+        Mail::fake();
+
+        $user = User::factory()
+            ->has((Wallet::factory())->has(Transaction::factory()))
+            ->create();
+
+        $this->actingAs($user);
+
+        $racer = Racer::factory()->create();
+
+        $response = $this->post(route('market.buy', $racer));
+        Mail::assertQueued(RacerPurchasedMail::class);
     }
 }
