@@ -44,4 +44,13 @@ class RoleTest extends TestCase
             'role_id' => Role::where('name', 'user')->first()->id,
         ]);
     }
+
+    public function test_guest_user_sees_only_home_and_racer_market_in_navigation()
+    {
+        $response = $this->get(route('market.index'));
+
+        $response->assertSee('Домой');
+        $response->assertDontSee('Кошелек');
+        $response->assertDontSee('Мои пилоты');
+    }
 }
