@@ -27,8 +27,9 @@ class RacerCanBeBoughtTest extends TestCase
     {
         $user = User::factory()
             ->has((Wallet::factory())->has(Transaction::factory()))
-
             ->create();
+
+        $this->actingAs($user);
 
         $racer = Racer::factory()->create();
 
@@ -36,6 +37,10 @@ class RacerCanBeBoughtTest extends TestCase
         $this->assertDatabaseHas('racers', [
             'id' => $racer->id,
             'user_id' => $user->id,
+        ]);
+
+        $this->assertDatabaseHas('transactions', [
+            'value' => -$racer->price,
         ]);
     }
 }
