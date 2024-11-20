@@ -46,15 +46,7 @@ class OwnRacersController extends Controller
 
     public function update(Racer $racer, Request $request): RedirectResponse
     {
-        $onMarket = false;
-        $statusMessage = 'racer not sale';
-
-        if (!$racer->on_market) {
-            $onMarket = true;
-            $statusMessage = 'racer sale';
-        }
-
-        $racer->update(['on_market' => $onMarket]);
+        $racer->update(['on_market' => !$racer->on_market]);
 
         return redirect()->route('ownRacers.index')->with('message', 'Успешно');
     }

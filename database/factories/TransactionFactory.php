@@ -19,7 +19,7 @@ class TransactionFactory extends Factory
     {
         return [
             'wallet_id' => Wallet::factory(),
-		    'value' => 1000,
+		    'value' => fake()->numberBetween(1000, 5000),
         ];
     }
 }

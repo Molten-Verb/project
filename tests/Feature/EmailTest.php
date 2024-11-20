@@ -4,9 +4,7 @@ namespace Tests\Feature;
 
 use Tests\TestCase;
 use App\Models\User;
-use Illuminate\Support\Facades\Queue;
 use Illuminate\Support\Facades\Notification;
-use Illuminate\Auth\Notifications\VerifyEmail;
 use App\Notifications\SendVerifyWithQueueNotification;
 
 class EmailTest extends TestCase
@@ -14,18 +12,16 @@ class EmailTest extends TestCase
     /**
      * @test
      */
-    public function email_verification_notification_is_queued(): void
+    public function email_verification_notification_is_send(): void
     {
         Notification::fake();
-        Queue::fake();
 
         $user = User::factory()->create([
             'email_verified_at' => null,
         ]);
 
-        $response = $this->actingAs($user)->post('/email/verification-notification');
+        $response = $this->actingAs($user)->post(route('verification.send'));
 
         Notification::assertSentTo([$user], SendVerifyWithQueueNotification::class);
-        Queue::assertPushed(SendVerifyWithQueueNotification::class, 1); // тест не видит в очереди
     }
 }

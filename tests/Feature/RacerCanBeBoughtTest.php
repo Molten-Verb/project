@@ -28,6 +28,7 @@ class RacerCanBeBoughtTest extends TestCase
         $this->assertDatabaseHas('racers', [
             'id' => $racer->id,
             'user_id' => $user->id,
+            'on_market' => false,
         ]);
 
         $this->assertDatabaseHas('transactions', [
