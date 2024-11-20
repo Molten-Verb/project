@@ -22,12 +22,6 @@ class UsersController extends Controller
 
     public function destroy(User $user, Request $request): RedirectResponse
     {
-        if (Auth::user()) {
-            Auth::logout();
-            $request->session()->invalidate();
-            $request->session()->regenerateToken();
-        }
-
         $user->delete();
 
         return redirect()->route('users.index')->with('message', 'Успешно');
