@@ -2,12 +2,14 @@
 
 namespace Database\Factories;
 
+use App\Models\User;
+use App\Enums\CurrencyType;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
- * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\Pilot>
+ * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\Wallet>
  */
-class PilotFactory extends Factory
+class WalletFactory extends Factory
 {
     /**
      * Define the model's default state.
@@ -17,7 +19,8 @@ class PilotFactory extends Factory
     public function definition(): array
     {
         return [
-            //
+            'user_id' => User::factory(),
+            'currency_type' => CurrencyType::USD->value,
         ];
     }
 }
