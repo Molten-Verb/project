@@ -30,7 +30,7 @@
                         </x-nav-link>
                     @endif
 
-                    @role('admin'))
+                    @role('admin')
                         <x-nav-link :href="route('users.index')" :active="request()->routeIs('users.index')">
                             {{ __('Пользователи') }}
                         </x-nav-link>
