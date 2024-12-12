@@ -18,7 +18,7 @@ return new class extends Migration
             $table->unsignedBigInteger('price')->nullable();
             $table->unsignedBigInteger('user_id')->nullable();
             $table->boolean('on_market')->default(false);
-            $table->string('avatar')->nullable();
+            $table->text('avatar')->nullable();
             $table->timestamps();
 
             $table->foreign('user_id')->references('id')->on('users');
