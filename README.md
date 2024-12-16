@@ -24,5 +24,6 @@ Laravel 10, PHP8.3, MySql, Docker
 <br>docker exec -it project_app bash
 <br>composer install
 
+<br>php artisan migrate
 <br>php artisan db:seed PermissionsSeeder
 <br>php artisan db:seed RacerSeeder
