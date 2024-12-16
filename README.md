@@ -1,6 +1,6 @@
 ## О проекте
 
-Laravel 10, PHP8.3, MySql
+Laravel 10, PHP8.3, MySql, Docker
 <br>
 <br>Идея проекта заключается в создании биржи по покупке/продаже пилотов формулы №1
 
@@ -19,5 +19,10 @@ Laravel 10, PHP8.3, MySql
 
 ## Перед запуском
 
-php artisan db:seed PermissionsSeeder
+<br>docker-compose build
+<br>docker-compose up -d
+<br>docker exec -it project_app bash
+<br>composer install
+
+<br>php artisan db:seed PermissionsSeeder
 <br>php artisan db:seed RacerSeeder
