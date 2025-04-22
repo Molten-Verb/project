@@ -20,6 +20,9 @@
                     <x-nav-link :href="route('market.index')" :active="request()->routeIs('market.index')">
                         {{ __('Биржа пилотов') }}
                     </x-nav-link>
+                    <x-nav-link :href="route('championship.index')" :active="request()->routeIs('championship.index')">
+                        {{ __('Текущие пилоты') }}
+                    </x-nav-link>
 
                     @if (Auth()->user())
                         <x-nav-link :href="route('wallet.index', ['id => $id'])" :active="request()->routeIs('wallet.index')">

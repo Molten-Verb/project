@@ -8,6 +8,7 @@ use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\CurrencyController;
 use App\Http\Controllers\OwnRacersController;
 use App\Http\Controllers\MarketRacerController;
+use App\Http\Controllers\F1ApiController;
 
 /*
 |--------------------------------------------------------------------------
@@ -86,4 +87,11 @@ Route::middleware('auth', 'role:admin')
     ->group(function () {
         Route::get('/', 'index')->name('index');
         Route::delete('/{user}', 'destroy')->name('destroy');
+    });
+
+Route::prefix('championship')
+    ->name('championship.')
+    ->controller(F1ApiController::class)
+    ->group(function () {
+        Route::get('/', 'index')->name('index');
     });
